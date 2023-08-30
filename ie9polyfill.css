@@ -1,0 +1,194 @@
+#registrationButton, #loginButton, .category input[type="submit"], #productFormButton, #orderForm input[type="submit"], #opinionButton
+{
+    filter: none;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFlOTBmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAwZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+}
+header nav
+{
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDBhMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMDBmZiIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+}
+header nav > *
+{
+    float: left;
+    position: relative;
+    top: 50% !important;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    margin: 0 auto;
+}
+header nav > label
+{
+    height: 24px;
+    -ms-transform: translateY(-50%) translateY(7px);
+    transform: translateY(-50%) translateY(7px);
+}
+header nav > label > span, #inputSearch
+{
+    display: block;
+    float: left;
+}
+#inputSearch
+{
+    width: calc(100% - 16px);
+}
+#goToCart
+{
+    text-align: center;
+}
+#logInButton, #registerButton
+{
+    display: table;
+    text-align: center;
+}
+#logInButton:hover, #registerButton:hover
+{
+    background-color: dodgerblue;
+}
+#logInButton span, #registerButton span
+{
+    vertical-align: middle;
+}
+#logInButton span:first-of-type, #registerButton span:first-of-type
+{
+    display: table-cell !important;
+}
+@media (min-width: 576px)
+{
+    #logInButton span:last-of-type, #registerButton span:last-of-type
+    {   
+        display: table-cell !important;
+    }
+    #logInButton span:first-of-type, #registerButton span:first-of-type
+    {
+        padding-right: 7px;
+    }
+}
+main .input-group
+{
+    font-size: 0;
+}
+main .input-group > input, main .input-group > div
+{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 1rem;
+}
+footer > div:first-of-type
+{
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+#loginForm > section
+{
+    float: left;
+    text-align: center;
+}
+#loginForm > section:first-of-type > *
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+.category
+{
+    text-align: center;
+}
+.product
+{
+    font-size: 0;
+}
+.productInfo, .priceInfo
+{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 1rem;
+}
+.productTitle
+{
+    font-size: 1rem;
+}
+.productInfo
+{
+    height: 100%;
+}
+.productImage, .productDesc, .productReview div
+{
+    float: left;
+}
+.productImage a div
+{
+    font-size: 0;
+    white-space: nowrap;
+}
+.productDetails
+{
+    position: relative;
+}
+.sellerInfo
+{
+    position: absolute;
+    bottom: 5px;
+    width: calc(65% - 15px);
+}
+.productReview div *
+{
+    float: left;
+}
+.productReview > div:last-of-type, .sellerInfo > div:last-of-type > span
+{
+    float: right;
+}
+.productReview > div:last-of-type > span
+{
+    float: none;
+}
+.productReview::after, .productDetails::after, .productView::after, #orderForm > fieldset .invalid-tooltip::before
+{
+    content: '';
+    display: block;
+    clear: both;
+}
+#loadingScreen > div
+{
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.productFeatures, .productSummary, .optionLabel
+{
+    float: left;
+}
+.optionLabel > label, .cartItem > div
+{
+    display: table-cell;   
+}
+.productSection:first-of-type > div > div
+{
+    display: inline-block;
+}
+.optionLabel > label, .cartItem > div, .productSection:first-of-type > div > div
+{
+    vertical-align: middle;
+}
+.optionLabel, .cartItem
+{
+    display: table;
+}
+.optionLabel > label
+{
+    height: 100%;
+}
+.optionLabel > label > span
+{
+    display: block;
+}
+.cartItemPrice, .optionLabel > label::before, .productSection:first-of-type > div
+{
+    text-align: center;
+}
+.quantity
+{
+    vertical-align: top;
+}

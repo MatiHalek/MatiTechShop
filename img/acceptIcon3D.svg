@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="rysunek.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="5.9081368"
+     inkscape:cx="291.88559"
+     inkscape:cy="477.4771"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4214">
+      <stop
+         style="stop-color:#33ff33;stop-opacity:1;"
+         offset="0"
+         id="stop4210" />
+      <stop
+         style="stop-color:#009c00;stop-opacity:1;"
+         offset="1"
+         id="stop4212" />
+    </linearGradient>
+    <filter
+       inkscape:label="Film Grain"
+       inkscape:menu="Image Effects"
+       inkscape:menu-tooltip="Adds a small scale graininess"
+       style="color-interpolation-filters:sRGB;"
+       id="filter298"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feTurbulence
+         type="fractalNoise"
+         numOctaves="3"
+         baseFrequency="1"
+         seed="0"
+         result="result0"
+         id="feTurbulence288" />
+      <feColorMatrix
+         result="result4"
+         values="0"
+         type="saturate"
+         id="feColorMatrix290" />
+      <feComposite
+         in="SourceGraphic"
+         in2="result4"
+         operator="arithmetic"
+         k1="1.25"
+         k2="0.5"
+         k3="0.5"
+         result="result2"
+         id="feComposite292" />
+      <feBlend
+         result="result5"
+         mode="normal"
+         in="result2"
+         in2="SourceGraphic"
+         id="feBlend294" />
+      <feComposite
+         in="result5"
+         in2="SourceGraphic"
+         operator="in"
+         result="result3"
+         id="feComposite296" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter961"
+       x="-0.36336344"
+       y="-0.36336344"
+       width="1.7267269"
+       height="1.7267269">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.4794319"
+         id="feGaussianBlur963" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4214"
+       id="radialGradient4216"
+       cx="72.77494"
+       cy="115.16412"
+       fx="72.77494"
+       fy="115.16412"
+       r="2.0027015"
+       gradientTransform="matrix(1,0,0,0.99992935,0,0.00819699)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Warstwa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="opacity:0.355204;mix-blend-mode:normal;fill:#000000;stroke-width:6.86501;paint-order:stroke fill markers;filter:url(#filter961)"
+       id="path404"
+       cx="73.529083"
+       cy="116.34188"
+       r="1.5833136"
+       transform="matrix(0.62347909,0.08334122,-0.06696484,0.28334422,35.508795,78.797936)" />
+    <path
+       id="path234"
+       style="fill:url(#radialGradient4216);stroke-width:1.78483;paint-order:stroke fill markers;fill-opacity:1"
+       d="m 73.580965,114.0125 a 2.0027076,2.0025008 0 0 0 -2.002634,2.00256 2.0027076,2.0025008 0 0 0 2.002634,2.00256 2.0027076,2.0025008 0 0 0 2.002769,-2.00256 2.0027076,2.0025008 0 0 0 -2.002769,-2.00256 z m 1.046127,1.12717 0.318298,0.31476 -1.322908,1.33755 -2.6e-4,-2.5e-4 -0.299891,0.30388 -0.881535,-0.86961 0.314402,-0.31853 0.563237,0.55551 z"
+       inkscape:export-filename="..\..\..\xampp\htdocs\sklep\img\listIcon.png"
+       inkscape:export-xdpi="102.01749"
+       inkscape:export-ydpi="102.01749" />
+  </g>
+</svg>

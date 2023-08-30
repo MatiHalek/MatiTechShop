@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="verified.png"
+   inkscape:export-xdpi="96.157066"
+   inkscape:export-ydpi="96.157066"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="verified.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.73851712"
+     inkscape:cx="132.02131"
+     inkscape:cy="886.91241"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect6973"
+       is_visible="true"
+       lpeversion="1"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+  </defs>
+  <g
+     inkscape:label="Warstwa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#00ccff;fill-opacity:1;stroke-width:6.29999;paint-order:stroke fill markers"
+       id="rect2714"
+       width="46.215919"
+       height="46.215919"
+       x="56.96381"
+       y="117.15199"
+       rx="0"
+       inkscape:tile-cx="80.071768"
+       inkscape:tile-cy="140.25995"
+       inkscape:tile-w="46.215918"
+       inkscape:tile-h="46.215918"
+       inkscape:tile-x0="56.963809"
+       inkscape:tile-y0="117.15199"
+       inkscape:export-filename="verified.png"
+       inkscape:export-xdpi="96.157066"
+       inkscape:export-ydpi="96.157066" />
+    <use
+       x="0"
+       y="0"
+       inkscape:tiled-clone-of="#rect2714"
+       xlink:href="#rect2714"
+       id="use4361" />
+    <use
+       x="0"
+       y="0"
+       inkscape:tiled-clone-of="#rect2714"
+       xlink:href="#rect2714"
+       transform="rotate(30,80.071768,140.25995)"
+       id="use4363" />
+    <use
+       x="0"
+       y="0"
+       inkscape:tiled-clone-of="#rect2714"
+       xlink:href="#rect2714"
+       transform="rotate(60,80.071768,140.25995)"
+       id="use4365"
+       style="fill:none" />
+    <g
+       id="g1118"
+       transform="translate(-2.8661041,8.9565741)">
+      <rect
+         style="opacity:1;fill:#ffffff;stroke:none;stroke-width:8.07278;paint-order:stroke fill markers"
+         id="rect537"
+         width="7.5235219"
+         height="21.137516"
+         x="-63.919224"
+         y="134.25871"
+         ry="0"
+         transform="rotate(-50.556036)" />
+      <rect
+         style="fill:#ffffff;stroke:none;stroke-width:10.4042;paint-order:stroke fill markers"
+         id="rect537-7"
+         width="7.5235219"
+         height="35.109772"
+         x="149.81195"
+         y="22.615595"
+         ry="0"
+         transform="rotate(41.149308)" />
+    </g>
+  </g>
+</svg>
