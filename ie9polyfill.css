@@ -3,6 +3,14 @@
     filter: none;
     background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFlOTBmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAwZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 }
+.input input.valid, #registrationForm input[type="checkbox"].valid
+{
+    box-shadow: 0px 0px 5px 2px rgba(0, 255, 0, 0.75) inset;
+}
+.input input.invalid, #registrationForm input[type="checkbox"].invalid
+{
+    box-shadow: 0px 0px 5px 2px rgba(255, 0, 0, 0.75) inset;
+}
 header nav
 {
     background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDBhMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMDBmZiIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
@@ -73,12 +81,10 @@ main .input-group > input, main .input-group > div
     vertical-align: top;
     font-size: 1rem;
 }
-footer > div:first-of-type
+footer > div:first-of-type > div, .fullscreen img, #loadingScreen > div, #back, #forward
 {
-    position: relative;
     top: 50%;
     -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
 }
 #loginForm > section
 {
@@ -121,9 +127,17 @@ footer > div:first-of-type
     font-size: 0;
     white-space: nowrap;
 }
-.productDetails
+.fullscreen.active
+{
+    display: block;
+}
+.productDetails, .fullscreen img, #loadingScreen > div
 {
     position: relative;
+}
+footer > div:first-of-type > div
+{
+    position: absolute;
 }
 .sellerInfo
 {
@@ -148,13 +162,6 @@ footer > div:first-of-type
     content: '';
     display: block;
     clear: both;
-}
-#loadingScreen > div
-{
-    position: relative;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
 }
 .productFeatures, .productSummary, .optionLabel
 {

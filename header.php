@@ -1,6 +1,6 @@
 <header>
     <nav>
-        <a href="index.php" id="logo" title="MatiTechShop - wspaniałe oferty!" data-original-title="<b>MatiTechShop</b> - wspaniałe oferty!" data-toggle="tooltip" data-html="true">
+        <a href="./" id="logo" title="MatiTechShop - wspaniałe oferty!" data-toggle="tooltip" data-html="true">
             <img src="/sklep/img/logo_full.png" alt="Logo sklepu MatiTechShop" height="70" width="130">
             <img src="/sklep/img/logo_small.png" alt="Logo sklepu MatiTechShop" height="70" width="70">
         </a>       
@@ -16,7 +16,7 @@
         error_reporting(0);
         if(session_status() === PHP_SESSION_NONE)
             session_start();                 
-        if(isset($_SESSION["logged"]) && $_SESSION["logged"] == true)
+        if(isset($_SESSION["logged"]) && $_SESSION["logged"])
         {
             echo "<div class='btn-group'><button type='button' class='dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' id='logInButton'><span class='bi bi-person-circle'></span><span>";
             echo $_SESSION["username"];

@@ -1,6 +1,7 @@
 <?php
+    error_reporting(0);
     session_start();
-    if(isset($_SESSION["logged"]) && $_SESSION["logged"] == true)
+    if(isset($_SESSION["logged"]) && $_SESSION["logged"])
     {
         header("Location: index.php");
         exit();
@@ -15,7 +16,7 @@
         $reg_password2 = $_POST["reg_password2"];
         $reg_date = $_POST["reg_date"];
         $reg_phone = $_POST["reg_tel"];
-        $tests = array(validateLogin($reg_login), validatePassword($reg_password), validatePassword2($reg_password2, $reg_password), validateEmail($reg_email), validateDate($reg_date), validateRegulations((isset($_POST["reg_regulations"]))?("true"):("false")), validateCaptcha());
+        $tests = array(ValidateLogin($reg_login), ValidatePassword($reg_password, $reg_login), ValidatePassword2($reg_password2, $reg_password), ValidateEmail($reg_email), ValidateDate($reg_date),ValidateRegulations((isset($_POST["reg_regulations"]))?("true"):("false")), ValidateCaptcha());
         foreach($tests as $i)
         {
             if(!$i["passed"])
@@ -79,14 +80,14 @@
     <title>Załóż nowe konto | MatiTechShop</title>
     <base href="http://127.0.0.1/sklep/">
     <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="jquery-ui-1.13.2.custom/jquery-ui.min.css">
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfiUfknAAAAAKF3I0Lw4sYPLhNeU2eEhLFvtd9C"></script>
     <link rel="stylesheet" href="/sklep/style.css">
+    <noscript>
+        <link rel="stylesheet" href="noscriptstyle.css">
+    </noscript>
     <script src="./js/cart.js"></script>
     <!--[if lte IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
@@ -99,7 +100,14 @@
         include "header.php";
    ?>   
     <main class="mainRegistration contentContainer">
-        <article class="col-sm-10 col-md-7" id="registrationForm">
+        <article class="col-sm-10 col-md-8 col-lg-7" id="registrationForm">
+            <?php
+                if(isset($_SESSION["reg_error_captcha"]))
+                {
+                    echo "<div class='alert alert-danger font-weight-bold shadow'>Weryfikacja za pomocą systemu reCAPTCHA nie powiodła się. Prosimy spróbować ponownie.<br><small>Uwaga: Być może korzystasz z nieobsługiwanej przeglądarki. <a href='https://support.google.com/recaptcha/answer/6223828?hl=pl' target='_blank'>Dowiedz się więcej</a></small></div>";           
+                    unset($_SESSION["reg_error_captcha"]);
+                }
+            ?>
             <h1>Zarejestruj się</h1>
             <h6>Wykorzystaj w pełni możliwości naszego sklepu</h6><br>
             <form action="registration" method="POST"> 
@@ -127,7 +135,7 @@
                     <div class="input-group">                       
                         <input type="password" name="reg_password" placeholder="Hasło" id="password" class="form-control" minlength="8" maxlength="255" data-toggle="tooltip" data-placement="left" data-html="true" title="<b>Wymyśl silne hasło.</b><br>Nie udostępniaj go nikomu." required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-secondary" title="Pokaż"><span class="bi bi-eye-fill"></span></button>
+                            <button type="button" class="btn btn-secondary" title="Pokaż znaki" data-toggle="tooltip"><span class="bi bi-eye-fill"></span></button>
                         </div>
                         <div>
                             <?php
@@ -145,7 +153,7 @@
                     <div class="input-group"> 
                         <input type="password" name="reg_password2" class="form-control" placeholder="Powtórz hasło" id="password2" minlength="8" maxlength="255" data-toggle="tooltip" data-placement="left" data-html="true" title="<b>Powtórz wpisane wcześniej hasło.</b>" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-secondary" title="Pokaż"><span class="bi bi-eye-fill"></span></button>
+                            <button type="button" class="btn btn-secondary" title="Pokaż znaki" data-toggle="tooltip"><span class="bi bi-eye-fill"></span></button>
                         </div>
                         <div>
                             <?php
@@ -208,7 +216,7 @@
                 </div>
                 <div>
                     <input type="checkbox" name="reg_regulations" id="regulations" required>                  
-                    <label for="regulations"><span title="To pole jest wymagane." class="requiredField" data-toggle="tooltip"><sup>*</sup></span>Akceptuję <a href="#">regulamin</a> MatiTechShop.</label>   
+                    <label for="regulations"><span title="To pole jest wymagane." class="requiredField" data-toggle="tooltip"><sup>*</sup></span>Akceptuję <a href="./">regulamin</a> MatiTechShop.</label>   
                     <div>
                         <?php
                             if(isset($_SESSION["reg_error_regulations"]))
@@ -218,20 +226,8 @@
                             }
                         ?>
                     </div>
-                </div>             
-                <div>
-                    <div class="g-recaptcha" id="captcha" name="reg_recaptcha" data-sitekey="6LdsoMAiAAAAAJLFIG1GF--fzgSMB2eVVgWyOMZ1" data-callback='onSubmit' data-action='submit'></div>     
-                    <div>
-                        <?php
-                            if(isset($_SESSION["reg_error_captcha"]))
-                            {
-                                echo "<div class='invalid-tooltip'>".$_SESSION["reg_error_captcha"]."</div>";
-                                unset($_SESSION["reg_error_captcha"]);
-                            }
-                        ?>
-                    </div>
-                </div>                                 
-                <input type="submit" value="Zarejestruj się" id="registrationButton">
+                </div>                                             
+                <input type="submit" value="Zarejestruj się" id="registrationButton" class="g-recaptcha" data-size="invisible" data-badge="left" data-sitekey="6LfiUfknAAAAAKF3I0Lw4sYPLhNeU2eEhLFvtd9C" data-callback='OnSubmit' data-action='submit'>
             </form>
             <hr>
             <strong>Masz już konto? </strong><a href="login">Zaloguj się</a>        
@@ -240,18 +236,25 @@
     <?php
         include "footer.php";
     ?>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js" integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <script src="jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
     <script src="jquery-ui-1.13.2.custom/datepicker-pl.js"></script>
     <script>        
-        $("#login, #password, #password2, #email, #date, #regulations").on("keyup change", function(){
+        $("#login, #password, #password2, #email, #date, #regulations").on("keyup change input", function(){         
             var element = this;
+            var data = new Object();
+            data.property = element.id;
+            if(element.id == "regulations")
+                data.q = element.checked;
+            else
+                data.q = element.value;
+            if(element.id == "password2")
+                data.tmp = document.querySelector("#password").value;
+            else if(element.id == "password")
+                data.tmp = document.querySelector("#login").value;
             $.ajax({
             method: "POST",
             url: "test.php",
-            data: {"property" : element.id, "q" : ((element.id == "regulations") ? (element.checked) : (element.value)), "tmp" : ((element.id == "password2") ? (document.querySelector("#password").value) : ("false"))},
+            data: data,
             success: 
             function(result){
                 if(result.lastIndexOf("<div class='invalid-tooltip'>") == 0)
@@ -265,8 +268,10 @@
                     $(element).removeClass("invalid").addClass("valid");
                 }
             }});
-            if(element.id == "password")
+            if(element.id == "password" && document.querySelector("#password2").value)
                 $("#password2").keyup();
+            if(element.id == "login" && document.querySelector("#password").value)
+                $("#password").keyup();
         });
         if(document.querySelector("#date").type != "date")
             $("#date").datepicker({
@@ -277,19 +282,42 @@
                 if(this.parentElement.parentElement.children[0].type == "password")
                 {
                     this.parentElement.parentElement.children[0].type = "text";
-                    this.title = "Ukryj";
+                    this.title = "Ukryj znaki";
                     this.innerHTML = "<span class='bi bi-eye-slash-fill'></span>";
                 }
                 else
                 {
                     this.parentElement.parentElement.children[0].type = "password";
-                    this.title = "Pokaż";
+                    this.title = "Pokaż znaki";
                     this.innerHTML = "<span class='bi bi-eye-fill'></span>";
                 }
+                $(this).tooltip("dispose").tooltip("show");
             }, false);
         });
+        if(window.matchMedia)
+        {
+            var mediaQueryList = window.matchMedia("(min-width: 768px)");
+            function ToggleTooltips(mql)
+            {
+                if(!mql.matches)
+                    $("#login, #password, #password2, #email, #date, #phone").tooltip("dispose");
+                else
+                    $("#login, #password, #password2, #email, #date, #phone").tooltip({"trigger" : "focus"});
+            }
+            if(mediaQueryList.addEventListener)
+                mediaQueryList.addEventListener("change", ToggleTooltips, false);
+            else
+                mediaQueryList.addListener(ToggleTooltips);
+        }
         $('[data-toggle="tooltip"]:not(#login, #password, #password2, #email, #date, #phone)').tooltip();
         $("#login, #password, #password2, #email, #date, #phone").tooltip({"trigger" : "focus"});
+        function OnSubmit(token)
+        {
+            if(document.querySelector("form").checkValidity())
+                document.querySelector("form").submit();
+            else
+                document.querySelector("form").reportValidity();
+        }
     </script>
 </body>
 </html>

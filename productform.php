@@ -231,12 +231,12 @@
     <title>Dodaj nowy produkt | MatiTechShop</title>
     <base href="http://127.0.0.1/sklep/">
     <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="/sklep/style.css">
+    <noscript>
+        <link rel="stylesheet" href="noscriptstyle.css">
+    </noscript>
     <script src="./js/cart.js"></script>
     <!--[if lte IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
@@ -350,7 +350,7 @@
                 echo "<span class='bi bi-file-earmark-arrow-up-fill'></span><span id='uploadedFileName'></span>";
                 echo "<input type='file' name='productDefaultImage' accept='.png, .jpg, .jpeg, .gif, .bmp, .tiff'";
                 if($isEditModeEnabled)
-                    echo "></label><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Zdjęcie w tle jest obecnie ustawione jako domyślne. Przesłanie innego pliku będzie oznaczać jego zmianę.</h6>";
+                    echo "></label><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Zdjęcie w tle jest obecnie ustawione jako domyślne. Przesłanie innego pliku będzie oznaczać jego zmianę.</h6>";
                 else
                     echo " required></label>";
                 if(isset($_SESSION["product_error_defaultImage"]))
@@ -397,6 +397,7 @@
                 $result->free_result();
                 echo "<button type='button' class='btn btn-info' id='addParameter'><span class='bi bi-database-fill-add'></span> Dodaj parametr</button>";     
                 echo "<div id='parameterList'></div></div>";
+                #echo "<h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Jeżeli produkt ma więcej niż 5 parametrów, na liście produktów z poziomu kategorii będzie widocznych tylko pięć pierwszych (oznaczonych specjalną ramką).</h6>";
                 if(isset($_SESSION["product_error_parameters"]))
                 {
                     echo "<div class='invalid-tooltip'>".$_SESSION["product_error_parameters"]."</div>";
@@ -490,9 +491,6 @@
     <?php
         include "footer.php";
     ?>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js" integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <script src="./js/dragAndDrop.js"></script>
     <script>
         if(document.querySelector("#isOnSale") != null)
@@ -556,6 +554,11 @@
                 addParameter("", "");
             }, false);
         }
+        window.addEventListener("beforeunload", function(e){
+            var confirmationMessage = "Jeżeli wyjdziesz z tej strony, wprowadzone zmiany zostaną utracone.";
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        }, false);
         $('[data-toggle="tooltip"]').tooltip();
     </script>
     <?php
@@ -570,8 +573,7 @@
                 echo "<script>";
                 while($row = $result->fetch_assoc())
                     echo "addParameter('".htmlspecialchars($row["parametr"])."', '".htmlspecialchars($row["wartosc"])."');";
-                echo "</script>";
-                    
+                echo "</script>";                  
             }                      
             $result->free_result();
         }       

@@ -1,0 +1,19 @@
+#loadingScreen
+{
+    display: none;
+}
+header::after
+{
+    content: '\26A0  Aby korzystać ze wszystkich funkcji strony, włącz obsługę JavaScript.';
+    display: block;
+    background-color: dodgerblue;
+    width: calc(100% - 20px);
+    font-family: 'Lexend', sans-serif;
+    border-radius: 10px;
+    margin: 0 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: .9rem;
+    padding: .2rem 0;
+}

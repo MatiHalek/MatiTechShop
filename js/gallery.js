@@ -1,10 +1,10 @@
 var title = document.querySelector("h3").innerText;
-var images = Array.prototype.slice.call(document.querySelectorAll(".productSection img"));
+var images = [].slice.call(document.querySelectorAll(".productSection img"));
 images.forEach(function (element, index){
     element.addEventListener("click", function(){
         document.querySelector(".fullscreen img").setAttribute("src", element.getAttribute("src"));
         document.querySelector(".fullscreen img").setAttribute("alt", element.getAttribute("alt"));
-        document.querySelector(".fullscreen").style.display = "flex";
+        $(".fullscreen").addClass("active");
         document.querySelector("#imageInfo").innerHTML = "<h4>" + title + "</h4><h5 style='color: orange;'>" + (index + 1) + "/" + images.length + "</h5>";
         document.body.style.overflow = "hidden";
         document.querySelector(".fullscreen img").style.animation = "0.5s normal 0s forwards 1 imageIn ease-in-out";
@@ -13,11 +13,11 @@ images.forEach(function (element, index){
 document.querySelector(".fullscreen").addEventListener("click", function(event){
     if(event.currentTarget !== event.target)
         return;
-    this.style.display = "none";
+    $(this).removeClass("active");
     document.body.style.overflow = "visible";
 }, false);
 document.querySelector(".fullscreen button:first-of-type").addEventListener("click", function(){
-    document.querySelector(".fullscreen").style.display = "none";
+    $(".fullscreen").removeClass("active");
     document.body.style.overflow = "visible";
 }, false);
 document.querySelector("#forward").addEventListener("click", function(){
@@ -64,12 +64,12 @@ document.querySelector("#back").addEventListener("click", function(){
         document.querySelector("#imageInfo").innerHTML = "<h4>" + title + "</h4><h5 style='color: orange;'>" + images.length + "/" + images.length + "</h5>";
     } 
 }, false);
-Array.prototype.slice.call(document.querySelectorAll(".imgContainer")).forEach(function (element) {
+[].slice.call(document.querySelectorAll(".imgContainer")).forEach(function (element) {
         element.addEventListener("mouseover", function(){
         this.firstElementChild.style.filter="brightness(35%)";
     }, false)
 });
-Array.prototype.slice.call(document.querySelectorAll(".imgContainer")).forEach(function (element) {
+[].slice.call(document.querySelectorAll(".imgContainer")).forEach(function (element) {
         element.addEventListener("mouseout", function(){
         this.firstElementChild.style.filter="none";
     }, false)

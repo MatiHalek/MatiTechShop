@@ -80,19 +80,11 @@
     <title>MatiTechShop - wspaniałe oferty! | Strona główna</title>
     <base href="http://127.0.0.1/sklep/">
     <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="/sklep/style.css">
     <noscript>
-        <style>
-            #loadingScreen
-            {
-                display: none;
-            }
-        </style>
+        <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
     <script src="./js/alert.js"></script>
     <script src="./js/cart.js"></script>
@@ -186,174 +178,170 @@
                 }
                 else
                 {                   
-                    $query = $connect->prepare('SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ?');
-                    $query->bind_param('i', $_GET["categoryid"]);
-                    $query->execute();
-                    $result = $query->get_result();
-                    if($result->num_rows > 0)
-                    {
-                        $query2 = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
-                        $query2->bind_param('i', $_GET["categoryid"]);
-                        $query2->execute();
-                        $result2 = $query2->get_result();
-                        $row2 = $result2->fetch_assoc();
-                        echo "<h2>".$row2["nazwa"]." (".$result->num_rows.")</h2>";
-                        if($admin)
-                            echo "<a href='productform.php?categoryid=".$_GET["categoryid"]."' id='addNewProduct' title='Dodaj nowy produkt do tej kategorii' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-pencil-fill'></span> Dodaj</a>";
-                        echo "<script>document.title='".$row2["nazwa"]." - wspaniałe oferty w MatiTechShop';</script>";
-                        while($row = $result->fetch_assoc())
-                        {
-                            echo "<div class='product'>";
-                            echo "<div class='productTitle'>";
-                            echo "<a href='product/".$row["produkt_id"]."/'>";
-                            echo "<h4>".$row["nazwa"]."</h4>";
-                            echo "</a>";
-                            echo "<span class='productCode' title='Kod produktu' data-toggle='tooltip'>(".str_pad($row["produkt_id"], 6, "0", STR_PAD_LEFT).")</span>";
-                            echo "</div>";
-                            echo "<div class='productInfo'>";
-                            echo "<div class='productReview'>";
-                            $queryOpinion = $connect->prepare("SELECT COUNT(produkt_opinia_id) AS liczba, ROUND(AVG(opinia), 1) AS srednia FROM produkt_opinia WHERE produkt_id = ?");
-                            $queryOpinion->bind_param('i', $row["produkt_id"]);
-                            $queryOpinion->execute();
-                            $resultOpinion = $queryOpinion->get_result();
-                            $rowOpinion = $resultOpinion->fetch_assoc();
-                            $gradientId = 1;
-                            if($rowOpinion["liczba"] > 0)
-                            {                               
-                                echo "<div title='".$rowOpinion["liczba"]." osób oceniło ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
-                                for($i = 1; $i <= 5; $i++)
-                                {
-                                    $gradient = false;
-                                    echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='25' height='25'>";
-                                    if($i == (floor($rowOpinion["srednia"]) + 1) && !is_int($rowOpinion["srednia"]))
-                                    {
-                                        $offset = round($rowOpinion["srednia"] - floor($rowOpinion["srednia"]), 1) * 100;
-                                        echo "<defs>";
-                                        echo "<linearGradient id='gradient".$gradientId."'>";
-                                        echo "<stop offset='".$offset."%' stop-color='gold'/>";
-                                        echo "<stop offset='".$offset."%' stop-color='grey'/>";
-                                        echo "</linearGradient>";
-                                        echo "</defs>";
-                                        $gradient = true;
-                                    }
-                                    echo "<path fill='";
-                                    if($gradient)
-                                        echo "url(#gradient".($gradientId++).")";
-                                    elseif($i <= floor($rowOpinion["srednia"]))
-                                        echo "gold";
-                                    else
-                                        echo "grey";
-                                    echo "' d='M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z'/>";
-                                    echo "</svg>";
-                                }
-                                echo "<span class='font-weight-bold ml-2'>".str_replace(".", ",", $rowOpinion["srednia"])."</span>";
-                                echo "<span class='text-primary ml-1'>(".$rowOpinion["liczba"].")</span>";
-                                echo "</div>";                               
-                            }
-                            $queryCustomers = $connect->prepare("SELECT COUNT(*) AS ilosc, SUM(liczba) AS suma FROM(SELECT uzytkownik_id, SUM(ilosc) AS liczba FROM `produkt_zamowienie` INNER JOIN zamowienie USING(zamowienie_id) WHERE produkt_id = ? GROUP BY uzytkownik_id) AS test");
-                            $queryCustomers->bind_param('i', $row["produkt_id"]);
-                            $queryCustomers->execute();
-                            $resultCustomers = $queryCustomers->get_result();
-                            $rowCustomers = $resultCustomers->fetch_assoc();
-                            if($rowCustomers["ilosc"] > 0)
-                            {
-                                echo "<div class='ml-auto' title='".$rowCustomers["ilosc"]." osób kupiło ".$rowCustomers["suma"]." produktów' data-toggle='tooltip'>";
-                                echo $rowCustomers["ilosc"]." <span class='bi bi-people-fill'></span>";
-                                echo $rowCustomers["suma"]." <span class='bi bi-bag-plus-fill'></span>";
-                                echo "</div>";
-                            }                          
-                            echo "</div>";
-                            echo "<div class='productDetails'>";
-                            echo "<div class='productImage'>";
-                            $path = './img/productImages/'.$row["produkt_id"].'/';
-                            $files = array_diff(scandir($path), array(".", "..", "default"));
-                            if(count($files) > 0)
-                            {
-                                echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip'>&lt;</button>";
-                                echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip'>&gt;</button>";
-                            }                           
-                            if($row["najlepsza_cecha"])
-                                echo "<div class='bestFeature'><span class='bi bi-star-fill'></span>".$row["najlepsza_cecha"]."</div>";
-                            echo "<a href='product.php?id=".$row["produkt_id"]."'>";
-                            echo "<div>";                                                        
-                            echo "<img src='".$path."/"."default/".scandir($path."/"."default/")[2]."' alt='laptop'>";
-                            foreach($files as $file)
-                                echo "<img src='".$path.$file."' alt='laptop'>";                                                                                            
-                            echo "</div>";
-                            echo "</a>";
-                            echo "</div>";
-                            echo "<div class='productDesc'>";
-                            echo "<div class='productProperties' style='overflow-y: auto; height: calc(100% - 60px);'>";
-                            $query2 = $connect->prepare('SELECT parametr, wartosc FROM produkt_parametr INNER JOIN parametr USING(parametr_id) WHERE produkt_id= ?');
-                            $query2->bind_param('i', $row["produkt_id"]);
-                            $query2->execute();
-                            $result2 = $query2->get_result();
-                            if($result2->num_rows > 0)
-                            {
-                                echo "<ul>";
-                                while($row2 = $result2->fetch_assoc())
-                                    echo "<li class='text-uppercase'>".$row2["parametr"].": <span class='font-weight-bold ml-1'>".$row2["wartosc"]."</span></li>";                            
-                                echo "</ul>";
-                            }                            
-                            echo "</div>";
-                            echo "<div class='sellerInfo'>";
-                            echo "<div>Sprzedaje</div>";
-                            echo "<div>";
-                            echo "<a href='#'>@MatiHalek</a>";
-                            echo "<span><span class='bi bi-hand-thumbs-up-fill'></span>100%</span>";
-                            echo "</div>";
-                            echo "</div>";                                                    
-                            echo "</div>"; 
-                            echo "</div>";                                                          
-                            echo "</div>";
-                            echo "<div class='priceInfo'>";
-                            echo "<div>";
-                            $mainPrice = $row["cena"];
-                            if($row["promocja"])
-                            {
-                                echo "<div class='discount'>".number_format($row["cena"], 2, ",", " ")."</div>";
-                                $mainPrice = $row["promocja"];
-                            } 
-                            echo "<div style='text-align: center; font-weight: bold; padding-bottom: 1rem;'>";
-                            echo "<div style='font-size: 3rem; display:inline-block; line-height: 1;'>".number_format(floor($mainPrice), 0, '.', ' ')."</div>";
-                            echo "<div style='display: inline-block; vertical-align: top;'>";
-                            echo "<div style='font-size: 1.5rem; line-height: 1.4;'>".explode(".", $mainPrice)[1]."</div>";
-                            echo "<div style='font-size: 0.9rem; line-height: 1;'>zł</div>";
-                            echo "</div>";
-                            echo "</div>";
-                            echo "<div style='text-align: center;'>";
-                            $amount = $row["ilosc"];
-                            if($amount > 0)
-                                echo "<button type='button' class='addToCart' id='btnAdd".$row["produkt_id"]."'><span class='bi bi-basket-fill'></span>Dodaj do koszyka</button>";                      
-                            echo "</div>";
-                            echo "<div style='text-align: center;'>";
-                            if($amount > 0)
-                                echo "Dostępność: ";
-                            if($amount <= 0)
-                                echo "<span style='color: gray; font-weight: bold;'>Produkt niedostępny</span>";
-                            elseif($amount < 10)
-                                echo "<span style='color: orangered; font-weight: bold;'>Mała ilość</span>";
-                            elseif($amount < 100)
-                                echo "<span style='color: #DAA520; font-weight: bold;'>Średnia ilość</span>";
-                            else 
-                                echo "<span style='color: green; font-weight: bold;'>Duża ilość</span>";
-                            echo "</div>";
-                            echo "</div>";                                        
-                            echo "</div>";        
-                            echo "</div>";
-                        }
-                    }              
+                    $query3 = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
+                    $query3->bind_param('i', $_GET["categoryid"]);
+                    $query3->execute();
+                    $result3 = $query3->get_result();
+                    if($result3->num_rows <= 0)
+                        echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";     
                     else
                     {
-                        $query = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
+                        $query = $connect->prepare('SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ?');
                         $query->bind_param('i', $_GET["categoryid"]);
                         $query->execute();
-                        $result=$query->get_result();
-                        if($result->num_rows > 0)
-                            echo "<div class='alert alert-danger information'><strong>Nie znaleziono produktów w kategorii ".$result->fetch_assoc()["nazwa"].".</strong> <a href='index.php'>Wróć na stronę główną</a></div>";
+                        $result = $query->get_result();
+                        $row3 = $result3->fetch_assoc();
+                        echo "<h2>".$row3["nazwa"]." <small>(Wyniki: ".$result->num_rows.")</small></h2>";
+                        if($admin)
+                            echo "<a href='productform.php?categoryid=".$_GET["categoryid"]."' id='addNewProduct' title='Dodaj nowy produkt do tej kategorii' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-pencil-fill'></span> Dodaj</a>";
+                        echo "<script>document.title='".$row3["nazwa"]." - wspaniałe oferty w MatiTechShop';</script>";
+                        if($result->num_rows <= 0)
+                            echo "<div class='alert alert-danger information'><strong>Nie znaleziono produktów w tej kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";
                         else
-                            echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator kategorii.</strong> <a href='index.php'>Wróć na stronę główną</a></div>";     
-                    }                                         
+                        {
+                            while($row = $result->fetch_assoc())
+                            {
+                                echo "<div class='product'>";
+                                echo "<div class='productTitle'>";
+                                echo "<a href='product/".$row["produkt_id"]."/'>";
+                                echo "<h4>".$row["nazwa"]."</h4>";
+                                echo "</a>";
+                                echo "<span class='productCode' title='Kod produktu' data-toggle='tooltip'>(".str_pad($row["produkt_id"], 6, "0", STR_PAD_LEFT).")</span>";
+                                echo "</div>";
+                                echo "<div class='productInfo'>";
+                                echo "<div class='productReview'>";
+                                $queryOpinion = $connect->prepare("SELECT COUNT(produkt_opinia_id) AS liczba, ROUND(AVG(opinia), 1) AS srednia FROM produkt_opinia WHERE produkt_id = ?");
+                                $queryOpinion->bind_param('i', $row["produkt_id"]);
+                                $queryOpinion->execute();
+                                $resultOpinion = $queryOpinion->get_result();
+                                $rowOpinion = $resultOpinion->fetch_assoc();
+                                $gradientId = 1;
+                                if($rowOpinion["liczba"] > 0)
+                                {                               
+                                    echo "<div title='".$rowOpinion["liczba"]." osób oceniło ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
+                                    for($i = 1; $i <= 5; $i++)
+                                    {
+                                        $gradient = false;
+                                        echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='25' height='25'>";
+                                        if($i == (floor($rowOpinion["srednia"]) + 1) && !is_int($rowOpinion["srednia"]))
+                                        {
+                                            $offset = round($rowOpinion["srednia"] - floor($rowOpinion["srednia"]), 1) * 100;
+                                            echo "<defs>";
+                                            echo "<linearGradient id='gradient".$gradientId."'>";
+                                            echo "<stop offset='".$offset."%' stop-color='gold'/>";
+                                            echo "<stop offset='".$offset."%' stop-color='grey'/>";
+                                            echo "</linearGradient>";
+                                            echo "</defs>";
+                                            $gradient = true;
+                                        }
+                                        echo "<path fill='";
+                                        if($gradient)
+                                            echo "url(#gradient".($gradientId++).")";
+                                        elseif($i <= floor($rowOpinion["srednia"]))
+                                            echo "gold";
+                                        else
+                                            echo "grey";
+                                        echo "' d='M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z'/>";
+                                        echo "</svg>";
+                                    }
+                                    echo "<span class='font-weight-bold ml-2'>".str_replace(".", ",", $rowOpinion["srednia"])."</span>";
+                                    echo "<span class='text-primary ml-1'>(".$rowOpinion["liczba"].")</span>";
+                                    echo "</div>";                               
+                                }
+                                $queryCustomers = $connect->prepare("SELECT COUNT(*) AS ilosc, SUM(liczba) AS suma FROM(SELECT uzytkownik_id, SUM(ilosc) AS liczba FROM `produkt_zamowienie` INNER JOIN zamowienie USING(zamowienie_id) WHERE produkt_id = ? GROUP BY uzytkownik_id) AS test");
+                                $queryCustomers->bind_param('i', $row["produkt_id"]);
+                                $queryCustomers->execute();
+                                $resultCustomers = $queryCustomers->get_result();
+                                $rowCustomers = $resultCustomers->fetch_assoc();
+                                if($rowCustomers["ilosc"] > 0)
+                                {
+                                    echo "<div class='ml-auto' title='".$rowCustomers["ilosc"]." osób kupiło ".$rowCustomers["suma"]." produktów' data-toggle='tooltip'>";
+                                    echo $rowCustomers["ilosc"]." <span class='bi bi-people-fill'></span>";
+                                    echo $rowCustomers["suma"]." <span class='bi bi-bag-plus-fill'></span>";
+                                    echo "</div>";
+                                }                          
+                                echo "</div>";
+                                echo "<div class='productDetails'>";
+                                echo "<div class='productImage'>";
+                                $path = './img/productImages/'.$row["produkt_id"].'/';
+                                $files = array_diff(scandir($path), array(".", "..", "default"));
+                                if(count($files) > 0)
+                                {
+                                    echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip'>&lt;</button>";
+                                    echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip'>&gt;</button>";
+                                }                           
+                                if($row["najlepsza_cecha"])
+                                    echo "<div class='bestFeature'><span class='bi bi-star-fill'></span>".$row["najlepsza_cecha"]."</div>";
+                                echo "<a href='product.php?id=".$row["produkt_id"]."'>";
+                                echo "<div>";                                                        
+                                echo "<img src='".$path."/"."default/".scandir($path."/"."default/")[2]."' alt='laptop'>";
+                                foreach($files as $file)
+                                    echo "<img src='".$path.$file."' alt='laptop'>";                                                                                            
+                                echo "</div>";
+                                echo "</a>";
+                                echo "</div>";
+                                echo "<div class='productDesc'>";
+                                echo "<div class='productProperties' style='overflow-y: auto; height: calc(100% - 60px);'>";
+                                $query2 = $connect->prepare('SELECT parametr, wartosc FROM produkt_parametr INNER JOIN parametr USING(parametr_id) WHERE produkt_id= ? LIMIT 5');
+                                $query2->bind_param('i', $row["produkt_id"]);
+                                $query2->execute();
+                                $result2 = $query2->get_result();
+                                if($result2->num_rows > 0)
+                                {
+                                    echo "<ul>";
+                                    while($row2 = $result2->fetch_assoc())
+                                        echo "<li class='text-uppercase'>".$row2["parametr"].": <span class='font-weight-bold ml-1'>".$row2["wartosc"]."</span></li>";                            
+                                    echo "</ul>";
+                                }                            
+                                echo "</div>";
+                                echo "<div class='sellerInfo'>";
+                                echo "<div>Sprzedaje</div>";
+                                echo "<div>";
+                                echo "<a href='#'>@MatiHalek</a>";
+                                echo "<span><span class='bi bi-hand-thumbs-up-fill'></span>100%</span>";
+                                echo "</div>";
+                                echo "</div>";                                                    
+                                echo "</div>"; 
+                                echo "</div>";                                                          
+                                echo "</div>";
+                                echo "<div class='priceInfo'>";
+                                echo "<div>";
+                                $mainPrice = $row["cena"];
+                                if($row["promocja"])
+                                {
+                                    echo "<div class='discount'>".number_format($row["cena"], 2, ",", " ")."</div>";
+                                    $mainPrice = $row["promocja"];
+                                } 
+                                echo "<div style='text-align: center; font-weight: bold; padding-bottom: 1rem;'>";
+                                echo "<div style='font-size: 3rem; display:inline-block; line-height: 1;'>".number_format(floor($mainPrice), 0, '.', ' ')."</div>";
+                                echo "<div style='display: inline-block; vertical-align: top;'>";
+                                echo "<div style='font-size: 1.5rem; line-height: 1.4;'>".explode(".", $mainPrice)[1]."</div>";
+                                echo "<div style='font-size: 0.9rem; line-height: 1;'>zł</div>";
+                                echo "</div>";
+                                echo "</div>";
+                                echo "<div style='text-align: center;'>";
+                                $amount = $row["ilosc"];
+                                if($amount > 0)
+                                    echo "<button type='button' class='addToCart' id='btnAdd".$row["produkt_id"]."'><span class='bi bi-basket-fill'></span>Dodaj do koszyka</button>";                      
+                                echo "</div>";
+                                echo "<div style='text-align: center;'>";
+                                if($amount > 0)
+                                    echo "Dostępność: ";
+                                if($amount <= 0)
+                                    echo "<span style='color: gray; font-weight: bold;'>Produkt niedostępny</span>";
+                                elseif($amount < 10)
+                                    echo "<span style='color: orangered; font-weight: bold;'>Mała ilość</span>";
+                                elseif($amount < 100)
+                                    echo "<span style='color: #DAA520; font-weight: bold;'>Średnia ilość</span>";
+                                else 
+                                    echo "<span style='color: green; font-weight: bold;'>Duża ilość</span>";
+                                echo "</div>";
+                                echo "</div>";                                        
+                                echo "</div>";        
+                                echo "</div>";
+                            } 
+                        }                       
+                    }                                                     
                 }
                 $result->free_result();
                 $connect->close();
@@ -362,9 +350,6 @@
     <?php
         include "footer.php";
     ?>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js" integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <script src="./js/slider.js"></script>
     <script>
         [].forEach.call(document.querySelectorAll(".addToCart"), function(el){

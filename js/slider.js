@@ -13,10 +13,3 @@
     images.style.transform = "translateX(-" + 100 * (newImage - 1) + "%)";
     images.setAttribute("data-imageselected", newImage);
 }, false)});
-/*$("#verified").tooltip();
-document.querySelector(".category").addEventListener("click", function(){
-    document.querySelector("#secret").style.display="block";
-}, false);
-document.querySelector("#secret").addEventListener("click", function(){
-    this.style.display="none";
-});*/
