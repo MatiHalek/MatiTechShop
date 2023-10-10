@@ -4,7 +4,7 @@
 }
 header::after
 {
-    content: '\26A0  Aby korzystać ze wszystkich funkcji strony, włącz obsługę JavaScript.';
+    content: '\26A0  Aby korzystać ze wszystkich funkcji sklepu, włącz obsługę JavaScript.';
     display: block;
     background-color: dodgerblue;
     width: calc(100% - 20px);
@@ -16,4 +16,6 @@ header::after
     text-align: center;
     font-size: .9rem;
     padding: .2rem 0;
+    position: absolute;
+    z-index: -1;
 }

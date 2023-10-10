@@ -3,7 +3,7 @@
     session_start();
     if(!isset($_SESSION["logged"]) || $_SESSION["user_data"]["position"] <= 1)
     {
-        header("Location: index.php");
+        header("Location: ./");
         exit();
     }
     if(isset($_POST["mode"]))
@@ -238,7 +238,7 @@
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>
@@ -554,10 +554,15 @@
                 addParameter("", "");
             }, false);
         }
-        window.addEventListener("beforeunload", function(e){
+        function ConfirmLeaving(e)
+        {
             var confirmationMessage = "Jeżeli wyjdziesz z tej strony, wprowadzone zmiany zostaną utracone.";
             (e || window.event).returnValue = confirmationMessage;
             return confirmationMessage;
+        }
+        window.addEventListener("beforeunload", ConfirmLeaving, false);
+        document.querySelector("#productForm").addEventListener("submit", function(){
+            window.removeEventListener("beforeunload", ConfirmLeaving, false);
         }, false);
         $('[data-toggle="tooltip"]').tooltip();
     </script>

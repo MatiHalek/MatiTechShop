@@ -29,7 +29,7 @@
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>

@@ -12,19 +12,19 @@
     {        
         while($row = $result->fetch_assoc())
         {
-            $query2 = $connect->prepare("SELECT * FROM produkt_kategoria INNER JOIN produkt USING(produkt_id) WHERE kategoria_id = ? AND POSITION(? IN nazwa) > 0 LIMIT 4");
+            $query2 = $connect->prepare("SELECT * FROM produkt_kategoria INNER JOIN produkt USING(produkt_id) WHERE kategoria_id = ? AND POSITION(TRIM(?) IN nazwa) > 0 LIMIT 4");
             $query2->bind_param('is', $row["kategoria_id"], $search);
             $query2->execute();
             $result2 = $query2->get_result();
             if($result2->num_rows > 0)
             {
-                $htmlText .= "<a href='category/".$row["kategoria_id"]."/' class='categoryResults'>".$row["nazwa"]."</a>";
+                $htmlText .= "<a href='category/".$row["kategoria_id"]."/' class='categoryResults' tabindex='-1'>Kategoria: ".$row["nazwa"]."</a>";
                 while($row2 = $result2->fetch_assoc())
-                    $htmlText .= "<a href='product/".$row2["produkt_id"]."/' class='productResults'><span class='searchTitle'>".$row2["nazwa"]."</span><span class='searchPrice'>".(($row2["promocja"])?(number_format($row2["promocja"], 2, ",", " ")):(number_format($row2["cena"], 2, ",", " ")))." zł</span></a>";
+                    $htmlText .= "<a href='product/".$row2["produkt_id"]."/' class='productResults' tabindex='-1'><div class='searchImage'><div style='background-image: url(img/productImages/".$row2["produkt_id"]."/default/".scandir("../img/productImages/".$row2["produkt_id"]."/default")[2].");'></div></div><div class='searchTitle' title='".$row2["nazwa"]."'>".$row2["nazwa"]."</div><div class='searchPrice'>".(($row2["promocja"])?(number_format($row2["promocja"], 2, ",", " ")):(number_format($row2["cena"], 2, ",", " ")))." zł</div></a>";
                 $result2->free_result();
             }          
             else if(str_contains(mb_strtolower($row["nazwa"]), mb_strtolower($search)))
-                $htmlText .= "<a href='index.php?categoryid=".$row["kategoria_id"]."' class='categoryResults'>".$row["nazwa"]."</a>";
+                $htmlText .= "<a href='category/".$row["kategoria_id"]."/' class='categoryResults'>Kategoria: ".$row["nazwa"]."</a>";
         }    
         $result->free_result();  
     }

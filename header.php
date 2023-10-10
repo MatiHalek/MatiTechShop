@@ -1,14 +1,31 @@
+<?php
+    if(preg_match('/(?i)msie [2-8]/',$_SERVER['HTTP_USER_AGENT']))
+        header("Location: unsupported-browser.php");
+?>
+<script>
+    var browser = navigator.userAgent;
+    if(browser.indexOf("Chrome/") >= 0 && browser.indexOf("Chromium/") == -1 && browser.indexOf("Edg/") == -1)
+        location.replace("unsupported-browser.php");
+</script>
 <header>
     <nav>
         <a href="./" id="logo" title="MatiTechShop - wspaniałe oferty!" data-toggle="tooltip" data-html="true">
             <img src="/sklep/img/logo_full.png" alt="Logo sklepu MatiTechShop" height="70" width="130">
             <img src="/sklep/img/logo_small.png" alt="Logo sklepu MatiTechShop" height="70" width="70">
         </a>       
-        <label>
-            <span class="bi bi-search"></span>
-            <input type="search" placeholder="Szukaj..." maxlength="200" id="inputSearch" title="Wyszukaj w sklepie" data-toggle="tooltip" data-trigger="hover"> 
-            <div id="searchResults"></div>
-        </label>
+        <form action="./" method="GET">
+           <label>
+                <span class="bi bi-search"></span>
+                <?php
+                    echo "<input type='search' name='search' placeholder='Szukaj...' maxlength='200' id='inputSearch' title='Wyszukaj w sklepie' data-toggle='tooltip' data-trigger='hover'";
+                    if(isset($_GET["search"]))
+                        echo " value='".htmlspecialchars($_GET["search"])."'";
+                    echo ">";
+                ?> 
+                <div id="searchResults"></div>
+            </label> 
+        </form>       
+        <div style="display: flex;">
         <a href="cart" id="goToCart" title="Zobacz koszyk" data-toggle="tooltip"><span class='bi bi-basket-fill'></span>
             <div id="cartItemCounter">-</div>
         </a>                                    
@@ -35,12 +52,13 @@
             <a href='login' id='logInButton'><span class='bi bi-person-circle'></span> <span>Zaloguj się</span></a>";
         }
     ?>   
+        </div>
     </nav>           
 </header>
 <script>
     function search(word)
     {
-        if(word.length >= 3)
+        if(word.replace(/^\s+|\s+$/g, '').length >= 3)
         {
             var ajax = new XMLHttpRequest();
             var url = "./ajax/searchEngine.php";
@@ -65,6 +83,10 @@
     }, false);
     document.querySelector("#inputSearch").addEventListener("blur", function(){
         document.querySelector("#searchResults").style.display = "none";
+    }, false);
+    document.querySelector("header nav > form").addEventListener("submit", function(e){
+        if(document.querySelector("#inputSearch").value.replace(/^\s+|\s+$/g, '').length == 0)
+            e.preventDefault();
     }, false);
     cart.countProducts();
 </script>

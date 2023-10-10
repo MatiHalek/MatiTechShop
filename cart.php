@@ -155,7 +155,7 @@
     </noscript>
     <script src="./js/alert.js"></script>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>
@@ -168,8 +168,16 @@
    <div class="alert notification" role="alert"></div>
     <main class="contentContainer">
         <h2>Twój koszyk</h2>
-        <form action="cart.php" method="POST" id="orderForm" >
-            <fieldset></fieldset>    
+        <form action="cart" method="POST" id="orderForm" >
+            <fieldset>
+                <h3>Produkty</h3>
+                <div style="position: relative;">
+                    <div id="loadingCart" style="position: absolute; width: calc(100% - 6px); height: 100%; border-radius: 3px; backdrop-filter: saturate(150%) blur(5px); background: rgba(255, 255, 255, .5); display: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; justify-content: center; align-items: center; z-index: 2; margin: 0 3px;">
+                        Aktualizuję koszyk...
+                    </div>
+                    <div></div>
+                </div>
+            </fieldset>    
             <?php
                 require "connect.php";
                 $connect = new mysqli($host, $db_user, $db_password, $db_name);
@@ -372,14 +380,15 @@
             return id_format;
         }
         var totalPrice = 0;
+        var cartContent;
         function loadCart()
         {
             $('#orderForm > fieldset:first-of-type button[data-toggle="tooltip"]').tooltip("dispose");
             totalPrice = 0;
-            document.querySelector("fieldset").innerHTML = "";
+            cartContent = document.createElement("div");
+            document.querySelector("#loadingCart").style.display = "flex";
             if(cart.products.length > 0)
             {
-                document.querySelector("fieldset").innerHTML = "<h3>Produkty</h3>";
                 function loadProducts(i)
                 {
                     var id = cart.products[i].productId.toString();
@@ -398,20 +407,11 @@
                                 var cartItem  = document.createElement("div");
                                 cartItem.className ="cartItem";
                                 cartItem.innerHTML = "<div class='cartItemImage'><img src='img/productImages/" + otherProperties[0] + "/default/" + otherProperties[6] + "' alt='image'></div><div class='cartItemTitle'><h4><a href='product/" + otherProperties[0]+ "/' target='_blank'>" + (i + 1) + ". " + otherProperties[1].toString().replace(/"/g, '\"') + "</a></h4><small>Kod produktu: " + formatId(otherProperties[0]) + "</small></div><div class='cartItemAmount'><button type='button' class='decrementButton' " + (otherProperties[3] == 1 ? " disabled" : "data-toggle='tooltip' data-trigger='hover' title='Zmniejsz'") + "><span class='bi bi-dash-lg'></span></button><input type='number' class='quantity' min='1' max='" + otherProperties[5] +"' value='" + otherProperties[3] + "'><button type='button' class='incrementButton' " + (otherProperties[3] == otherProperties[5] ? "disabled" : "data-toggle='tooltip' data-trigger='hover' title='Zwiększ'") + "><span class='bi bi-plus-lg'></span></button></div><div class='cartItemPrice'><div>" + otherProperties[3] + " x " + formatNumber(otherProperties[2]) + " zł</div><div>" + formatNumber(otherProperties[4]) + " zł</div></div><div class='cartItemRemove'><button type='button' title='Usuń produkt z koszyka' data-toggle='tooltip'><span class='bi bi-trash-fill'></span></button></div><input type='hidden' name='productIDs[]' value='" + otherProperties[0] + "'><input type='hidden' name='productQuantities[]' value='" + otherProperties[3] + "'>";
-                                document.querySelector("fieldset").appendChild(cartItem);  
-                                totalPrice +=otherProperties[4];                     
+                                cartContent.appendChild(cartItem);  
+                                totalPrice += otherProperties[4];                     
                             }
                             else
                                 cart.removeProduct(otherProperties[0]);
-                            try
-                            {
-                                $('[data-toggle="tooltip"]').tooltip();
-                            }
-                            catch(undefined)
-                            {
-                                if(window.console)
-                                    console.log("Tooltips cannot be displayed correctly. Probably you are using unsupported browser.");
-                            }
                         },
                         complete : function(){
                             i++;
@@ -424,7 +424,7 @@
             }
             else
             {
-                document.querySelector("fieldset").innerHTML = "<div class='alert alert-danger information'><span class='bi bi-cart-x-fill'></span> <strong>Brak produktów w koszyku. </strong><a href='index.php'>Wróć do sklepu</a></div>";
+                document.querySelector("fieldset").innerHTML = "<div class='alert alert-danger information'><span class='bi bi-cart-x-fill'></span> <strong>Brak produktów w koszyku. </strong><a href='./'>Wróć do sklepu</a></div>";
                 [].forEach.call(document.querySelectorAll("#orderForm > fieldset:not(:first-of-type)"), function(el){
                     el.setAttribute("disabled", "");
                 });
@@ -440,7 +440,7 @@
                     console.log("Tooltips cannot be displayed correctly. Probably you are using unsupported browser.");
             }
         }
-        $(document).on("change, input", ".quantity", function(){
+        $(document).on("change", ".quantity", function(){
             var id = parseInt(this.parentElement.parentElement.children[1].children[1].textContent.replace("Kod produktu: ", ""));
             cart.updateProduct(id, this.value);
             loadCart();
@@ -466,8 +466,7 @@
         $(document).on("click", ".cartItemRemove", function(){
             var id = parseInt(this.parentElement.children[1].children[1].textContent.replace("Kod produktu: ", ""));
             cart.removeProduct(id);
-            this.parentElement.parentElement.removeChild(this.parentElement);
-            location.reload();
+            loadCart();
         });      
         loadCart();
         function summarize()
@@ -501,7 +500,22 @@
                 }
             }
         }
-        $(document).ajaxStop(summarize);
+        $(document).on("ajaxStop", function(){
+            summarize();
+            setTimeout(function(){
+                document.querySelector("fieldset > div > div:nth-child(2)").outerHTML = cartContent.outerHTML;
+                setTimeout(function(){document.querySelector("#loadingCart").style.display = "none";}, 2000);
+                try
+                {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+                catch(undefined)
+                {
+                    if(window.console)
+                        console.log("Tooltips cannot be displayed correctly. Probably you are using unsupported browser.");
+                }
+            }, 0);
+        });
         [].forEach.call(document.querySelectorAll("[name='deliveryOptions']"), function(el){
             el.addEventListener("change", function(){
                 summarize();

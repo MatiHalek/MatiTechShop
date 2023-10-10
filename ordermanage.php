@@ -3,7 +3,7 @@
     session_start();
     if(!isset($_SESSION["logged"]) || $_SESSION["user_data"]["position"] <= 1)
     {
-        header("Location: index.php");
+        header("Location: ./");
         exit();
     }
 ?>
@@ -28,7 +28,7 @@
     </noscript>
     <script src="./js/alert.js"></script>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>

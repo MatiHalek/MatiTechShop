@@ -89,7 +89,7 @@
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>
@@ -313,10 +313,10 @@
         $("#login, #password, #password2, #email, #date, #phone").tooltip({"trigger" : "focus"});
         function OnSubmit(token)
         {
-            if(document.querySelector("form").checkValidity())
-                document.querySelector("form").submit();
+            if(document.querySelector("main form").checkValidity())
+                document.querySelector("main form").submit();
             else
-                document.querySelector("form").reportValidity();
+                document.querySelector("main form").reportValidity();
         }
     </script>
 </body>

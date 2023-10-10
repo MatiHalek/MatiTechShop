@@ -1,7 +1,7 @@
 <?php
     error_reporting(0);
     session_start();
-    if(isset($_SESSION["logged"]) && $_SESSION["logged"] == true)
+    if(isset($_SESSION["logged"]) && $_SESSION["logged"])
     {
         header("Location: index.php");
         exit();
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>
@@ -37,7 +37,7 @@
         include "animation.html";
         include "header.php";
    ?>
-    <main>
+    <main class="contentContainer">
         <article id="loginForm">
             <section>
                 <?php

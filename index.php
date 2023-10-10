@@ -88,7 +88,7 @@
     </noscript>
     <script src="./js/alert.js"></script>
     <script src="./js/cart.js"></script>
-    <!--[if lte IE 9]>
+    <!--[if IE 9]>
         <link rel="stylesheet" href="ie9polyfill.css">
     <![endif]-->
 </head>
@@ -128,7 +128,7 @@
                 $connect = new mysqli($host, $db_user, $db_password, $db_name);
                 $connect->set_charset('utf8mb4');
                 $admin = (isset($_SESSION["logged"]) && $_SESSION["user_data"]["position"] > 1) ? true : false;
-                if(!isset($_GET["categoryid"]))
+                if(!isset($_GET["categoryid"]) && !isset($_GET["search"]))
                 {
                     echo "<h2>Kategorie produktów</h2>";
                     if($admin)
@@ -178,19 +178,28 @@
                 }
                 else
                 {                   
-                    $query3 = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
-                    $query3->bind_param('i', $_GET["categoryid"]);
-                    $query3->execute();
-                    $result3 = $query3->get_result();
-                    if($result3->num_rows <= 0)
+                    $searchCategory =  $searchPhrase = "";
+                    $searchCategoryQuery = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
+                    $searchCategoryQuery->bind_param('i', $_GET["categoryid"]);
+                    $searchCategoryQuery->execute();
+                    $searchCategoryResult = $searchCategoryQuery->get_result();
+                    if($searchCategoryResult->num_rows == 0 && isset($_GET["categoryid"]))
                         echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";     
                     else
                     {
-                        $query = $connect->prepare('SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ?');
-                        $query->bind_param('i', $_GET["categoryid"]);
+                        if(isset($_GET["search"]))
+                        {
+                            $query = $connect->prepare("SELECT * FROM produkt_kategoria INNER JOIN produkt USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0");
+                            $query->bind_param('s', $_GET["search"]);
+                        }
+                        else
+                        {
+                            $query = $connect->prepare('SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ?');
+                            $query->bind_param('i', $_GET["categoryid"]);
+                        }        
                         $query->execute();
                         $result = $query->get_result();
-                        $row3 = $result3->fetch_assoc();
+                        $row3 = $searchCategoryResult->fetch_assoc();
                         echo "<h2>".$row3["nazwa"]." <small>(Wyniki: ".$result->num_rows.")</small></h2>";
                         if($admin)
                             echo "<a href='productform.php?categoryid=".$_GET["categoryid"]."' id='addNewProduct' title='Dodaj nowy produkt do tej kategorii' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-pencil-fill'></span> Dodaj</a>";
@@ -267,12 +276,12 @@
                                 $files = array_diff(scandir($path), array(".", "..", "default"));
                                 if(count($files) > 0)
                                 {
-                                    echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip'>&lt;</button>";
-                                    echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip'>&gt;</button>";
+                                    echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip' data-trigger='hover'>&lt;</button>";
+                                    echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip' data-trigger='hover'>&gt;</button>";
                                 }                           
                                 if($row["najlepsza_cecha"])
                                     echo "<div class='bestFeature'><span class='bi bi-star-fill'></span>".$row["najlepsza_cecha"]."</div>";
-                                echo "<a href='product.php?id=".$row["produkt_id"]."'>";
+                                echo "<a href='product/".$row["produkt_id"]."/'>";
                                 echo "<div>";                                                        
                                 echo "<img src='".$path."/"."default/".scandir($path."/"."default/")[2]."' alt='laptop'>";
                                 foreach($files as $file)
@@ -343,7 +352,7 @@
                         }                       
                     }                                                     
                 }
-                $result->free_result();
+                //$result->free_result();
                 $connect->close();
             ?>         
     </main>
