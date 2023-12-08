@@ -1,3 +1,3 @@
 # MatiTechShop
 Online store project.
-Works on a very wide range of browser (Internet Explorer 9+, Chrome 49+, Firefox 52+)
+Works on a very wide range of browsers (Internet Explorer 9+, Chrome 49+, Firefox 52+)
