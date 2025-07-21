@@ -18,11 +18,11 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
     <title>Zarządzanie zamówieniami | MatiTechShop</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
@@ -60,7 +60,7 @@
                                 }
                                 if($sortOptions[$i])
                                 {
-                                    echo "<a href='ordermanage.php?sort=".$sortOptions[$i]."' data-toggle='tooltip'";
+                                    echo "<a href='ordermanage/sort/".$sortOptions[$i]."' data-toggle='tooltip'";
                                     if(isset($_GET["sort"]) && $_GET["sort"] == $sortOptions[$i])
                                     {
                                         echo " title='Posortowano według tej kolumny'><span class='bi bi-funnel-fill'></span>";   
@@ -91,7 +91,7 @@
                         $result = $query->get_result();
                         while($row = $result->fetch_assoc())
                         {
-                            $query2 = $connect->prepare("SELECT * FROM produkt_zamowienie INNER JOIN produkt USING(produkt_id) WHERE zamowienie_id = ?");
+                            $query2 = $connect->prepare("SELECT produkt_id, nazwa, produkt_zamowienie.ilosc, cena_za_sztuke FROM produkt_zamowienie INNER JOIN produkt USING(produkt_id) WHERE zamowienie_id = ?");
                             $query2->bind_param('i', $row["zamowienie_id"]);
                             $query2->execute();
                             $result2 = $query2->get_result();
@@ -99,18 +99,18 @@
                             $products = array();
                             echo "<tbody><tr>";
                             echo "<td rowspan='$rowspan' class='idColumn'>".$row["zamowienie_id"]."</td>";
-                            echo "<td rowspan='$rowspan'><span style='";
+                            echo "<td rowspan='$rowspan'><span style='font-weight: 600; ";
                             if($row["nazwa_uzytkownika"])
-                                echo "color: blue;'><a href='#'>@".$row["nazwa_uzytkownika"]."</a>";
+                                echo "color: darkblue;'><span class='bi bi-person-circle'></span> ".$row["nazwa_uzytkownika"];
                             else
-                                echo "color: red;'>Użytkownik niezarejestrowany";
+                                echo "color: darkred;'>Użytkownik niezarejestrowany";
                             echo "</span><br>";
                             echo "<span style='font-weight: bold;'>".$row["imie"]." ".$row["nazwisko"]."</span><br>";
                             echo "ul. ".$row["ulica"]." ".$row["nr_domu"]."<br>".$row["kod_pocztowy"]." ".$row["miasto"]."<br>";
                             echo $row["email"]."<br>tel. ".$row["numer_telefonu"];
                             echo "</td>";
                             while($row2 = $result2->fetch_assoc())
-                                array_push($products,  "<td><a href='product/".$row2["produkt_id"]."/' target='_blank'>".((mb_strlen($row2["nazwa"]) > 33)?(substr($row2["nazwa"], 0, 30)."..."):($row2["nazwa"]))."</a><br>".$row2["ilosc"]." x ".number_format($row2["cena"], 2, ",", " ")." zł</td>");
+                                array_push($products,  "<td><a href='product/".$row2["produkt_id"]."' target='_blank'>".((mb_strlen($row2["nazwa"]) > 33)?(substr($row2["nazwa"], 0, 30)."..."):($row2["nazwa"]))."</a><br>".$row2["ilosc"]." x ".number_format($row2["cena_za_sztuke"], 2, ",", " ")." zł</td>");
                             echo $products[0];
                             echo "<td rowspan='$rowspan'>".$row["nazwa_dostawy"]."</td>";
                             echo "<td rowspan='$rowspan'>".$row["nazwa_platnosci"]."</td>";

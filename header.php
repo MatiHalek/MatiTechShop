@@ -1,17 +1,32 @@
 <?php
-    if(preg_match('/(?i)msie [2-8]/',$_SERVER['HTTP_USER_AGENT']))
-        header("Location: unsupported-browser.php");
+    $ua = $_SERVER['HTTP_USER_AGENT'];
+    $unsupported = false;
+    if (preg_match('/MSIE (\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 9) $unsupported = true;
+    } elseif (preg_match('/Trident\/.*rv:(\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 9) $unsupported = true;
+    } elseif (preg_match('/Chrome\/(\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 49) $unsupported = true;
+    } elseif (preg_match('/Firefox\/(\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 52) $unsupported = true;
+    } elseif (preg_match('/Version\/(\d+).*Safari/i', $ua, $m)) {
+        if ((int)$m[1] < 9) $unsupported = true;
+    } elseif (preg_match('/OPR\/(\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 36) $unsupported = true;
+    } elseif (preg_match('/Opera\/(\d+)/i', $ua, $m)) {
+        if ((int)$m[1] < 36) $unsupported = true;
+    }
 ?>
 <script>
-    var browser = navigator.userAgent;
-    if(browser.indexOf("Chrome/") >= 0 && browser.indexOf("Chromium/") == -1 && browser.indexOf("Edg/") == -1)
-        location.replace("unsupported-browser.php");
+    var unsupportedBrowser = <?= $unsupported ? 'true' : 'false' ?>;
+    if (unsupportedBrowser)
+        window.location.href = "/MatiTechShop/unsupported-browser.php";
 </script>
 <header>
     <nav>
-        <a href="./" id="logo" title="MatiTechShop - wspaniałe oferty!" data-toggle="tooltip" data-html="true">
-            <img src="/sklep/img/logo_full.png" alt="Logo sklepu MatiTechShop" height="70" width="130">
-            <img src="/sklep/img/logo_small.png" alt="Logo sklepu MatiTechShop" height="70" width="70">
+        <a href="./" id="logo" title="MatiTechShop - technologia dla każdego!" data-toggle="tooltip" data-html="true">
+            <img src="/MatiTechShop/img/logo_full.png" alt="Logo sklepu MatiTechShop" height="70" width="130">
+            <img src="/MatiTechShop/img/logo_small.png" alt="Logo sklepu MatiTechShop" height="70" width="70">
         </a>       
         <form action="./" method="GET">
            <label>
@@ -26,7 +41,7 @@
             </label> 
         </form>       
         <div style="display: flex;">
-        <a href="cart" id="goToCart" title="Zobacz koszyk" data-toggle="tooltip"><span class='bi bi-basket-fill'></span>
+        <a href="cart" id="goToCart" title="Koszyk" data-toggle="tooltip" aria-label="Koszyk"><span class='bi bi-basket-fill'></span>
             <div id="cartItemCounter">-</div>
         </a>                                    
     <?php
@@ -35,21 +50,22 @@
             session_start();                 
         if(isset($_SESSION["logged"]) && $_SESSION["logged"])
         {
-            echo "<div class='btn-group'><button type='button' class='dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' id='logInButton'><span class='bi bi-person-circle'></span><span>";
-            echo $_SESSION["username"];
+            echo "<div class='btn-group'><button type='button' class='dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' id='logInButton' aria-label='Konto'><span class='bi bi-person-circle'></span><span>";
+            $userInfo = $_SESSION["username"];
             if((int)($_SESSION["user_data"]["position"]) == 2)
-                echo "&nbsp;<img src='img/verified.png' alt='zweryfikowane' width='18' height='18' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<img src=\"img/verified.png\" alt=\"zweryfikowane\" width=\"50\" height=\"50\"><br><h5><b>Zweryfikowano</b></h5>To konto ma status zweryfikowanego, ponieważ należy do moderatora tego serwisu.' id='verified'>";
+                $userInfo .= "&nbsp;<img src='img/verified.png' alt='zweryfikowane' width='18' height='18' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<b><img src=\"img/verified.png\" alt=\"zweryfikowane\" width=\"20\" height=\"20\"> OFICJALNE</b><small>To konto ma status zweryfikowanego, ponieważ należy do moderatora tego serwisu.</small>' id='verified'>";
             if((int)($_SESSION["user_data"]["position"]) == 3)
-                echo "&nbsp;<img src='img/verifiedOwner.png' alt='zweryfikowane' width='18' height='18' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<img src=\"img/verifiedOwner.png\" alt=\"zweryfikowane\" width=\"50\" height=\"50\"><br><h5><b>Zweryfikowano</b></h5>To konto ma status zweryfikowanego, ponieważ należy do właściciela tego serwisu.' id='verified'>";
-            echo "</span></button><div class='dropdown-menu dropdown-menu-right'>";
+                $userInfo .= "&nbsp;<img src='img/verifiedOwner.png' alt='zweryfikowane' width='18' height='18' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<b><img src=\"img/verifiedOwner.png\" alt=\"zweryfikowane\" width=\"20\" height=\"20\"> OFICJALNE</b><small><br>To konto ma status zweryfikowanego, ponieważ należy do właściciela tego serwisu.</small>' id='verified'>";
+            echo "$userInfo</span></button><div class='dropdown-menu dropdown-menu-right'>";
+            echo "<div class='dropdown-header'>$userInfo</div><div class='dropdown-divider'></div>";
             if((int)($_SESSION["user_data"]["position"]) > 1)
-                echo "<a class='dropdown-item' href='ordermanage'>Zarządzaj zamówieniami</a><div class='dropdown-divider'></div>";
-            echo "<a class='dropdown-item' href='logout'>Wyloguj się</a></div></div>";
+                echo "<a class='dropdown-item' href='ordermanage'><span class='bi bi-kanban-fill'></span> Zarządzaj zamówieniami</a><div class='dropdown-divider'></div>";
+            echo "<a class='dropdown-item text-danger' href='logout'><span class='bi bi-door-closed-fill'></span> Wyloguj się</a></div></div>";
         }
         else
         {
-            echo "<a href='registration' id='registerButton'><span class='bi bi-person-fill-add'></span> <span>Zarejestruj się</span></a>
-            <a href='login' id='logInButton'><span class='bi bi-person-circle'></span> <span>Zaloguj się</span></a>";
+            echo "<a href='registration' id='registerButton'><span class='bi bi-person-fill-add' aria-label='Rejestracja' role='img'></span> <span>Zarejestruj się</span></a>
+            <a href='login' id='logInButton'><span class='bi bi-person-circle' aria-label='Logowanie' role='img'></span> <span>Zaloguj się</span></a>";
         }
     ?>   
         </div>
@@ -85,8 +101,30 @@
         document.querySelector("#searchResults").style.display = "none";
     }, false);
     document.querySelector("header nav > form").addEventListener("submit", function(e){
-        if(document.querySelector("#inputSearch").value.replace(/^\s+|\s+$/g, '').length == 0)
+        if(/^\s*$/.test(document.querySelector("#inputSearch").value))
             e.preventDefault();
     }, false);
     cart.countProducts();
+    if (document.createElement("input").placeholder == undefined)
+    {
+        document.querySelector("#inputSearch").addEventListener("focus", function() {
+            if(/^\s*$/.test(this.value) || this.value == "Szukaj...")
+            {
+                this.value = "";
+                this.className = this.className.replace(/\bplaceholder\b/g, '').trim();
+            }
+        }, false);
+        document.querySelector("#inputSearch").addEventListener("blur", function() {
+            if(/^\s*$/.test(this.value))
+            {
+                this.value = "Szukaj...";
+                this.className = "placeholder";
+            }            
+        }, false);
+        if(/^\s*$/.test(document.querySelector("#inputSearch").value))
+        {
+            document.querySelector("#inputSearch").value = "Szukaj...";
+            document.querySelector("#inputSearch").className = "placeholder";
+        }
+    }
 </script>

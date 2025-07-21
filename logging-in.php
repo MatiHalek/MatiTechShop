@@ -3,19 +3,19 @@
     session_start();
     if(!isset($_POST["username"]) || !isset($_POST["password"]))
     {
-        header("Location: login.php");
+        header("Location: login");
         exit();
     }
     require "connect.php";
     $connect = new mysqli($host, $db_user, $db_password, $db_name);
     $connect->set_charset('utf8mb4');
     if($connect->connect_errno != 0)
-        echo "Error: ".$polaczenie->connect_errno;
+        echo "Niestety, wystąpił problem podczas próby połączenia z bazą danych. Prosimy spróbować ponownie (Kod błędu: ".$polaczenie->connect_errno.").";
     else
     {
         $username = $_POST["username"];
         $password = $_POST["password"];
-        $query = $connect->prepare('SELECT * FROM uzytkownik WHERE nazwa_uzytkownika= ? AND czy_zalogowany = 1');
+        $query = $connect->prepare('SELECT * FROM uzytkownik WHERE nazwa_uzytkownika = ? AND czy_zalogowany = 1');
         $query->bind_param('s', $username);
         $query->execute();
         if($result=$query->get_result())
@@ -45,20 +45,20 @@
                     );
                     unset($_SESSION["error"]);
                     $result->free_result();
-                    header("Location: index.php");
+                    header("Location: ./");
                     exit();
                 }
                 else
                 {
                     $_SESSION["error"] = "<div class='alert alert-danger'><strong>Nieprawidłowa nazwa użytkownika lub hasło.</strong></div>";
-                    header("Location: login.php");
+                    header("Location: login");
                     exit();
                 }             
             }
             else
             {
                 $_SESSION["error"] = "<div class='alert alert-danger'><strong>Nieprawidłowa nazwa użytkownika lub hasło.</strong></div>";
-                header("Location: login.php");
+                header("Location: login");
                 exit();
             }
         }       

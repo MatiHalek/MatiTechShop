@@ -47,7 +47,7 @@
             $_SESSION["product_error_bestFeature"] = "Proszę podać poprawny ciąg znaków liczący od 5 do 30 znaków.";
         }
         $productAmount = $_POST["productAmount"];
-        if(!filter_var($productAmount, FILTER_VALIDATE_INT, array("options" => array("min_range" => 0, "max_range" => 1000000))))
+        if(filter_var($productAmount, FILTER_VALIDATE_INT, array("options" => array("min_range" => 0, "max_range" => 1000000))) === false)
         {
             $success = false;
             $_SESSION["product_error_amount"] = "Proszę podać poprawną liczbę całkowitą z zakresu od 0 do 1 000 000.";
@@ -213,7 +213,10 @@
                 }
             };          
             $connect->close();
-            header("Location: product/".$returnedId."/");
+            if(isset($_GET["categoryid"]) || $_POST["mode"] == "edit")
+                header("Location: ../../product/".$returnedId);
+            else
+                header("Location: product/".$returnedId);
             exit();
         }       
     }   
@@ -229,11 +232,11 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
     <title>Dodaj nowy produkt | MatiTechShop</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
@@ -285,11 +288,11 @@
             }         
             if(!$editError)
             {
-                echo "<form action='productform.php";
+                echo "<form action='productform";
                 if($isEditModeEnabled)
-                    echo "?mode=edit&id=".$_GET["id"];
+                    echo "/edit/".$_GET["id"];
                 elseif(isset($_GET["categoryid"]))
-                    echo "?categoryid=".$_GET["categoryid"];
+                    echo "/category/".$_GET["categoryid"];
                 echo "' method='POST' enctype='multipart/form-data' id='productForm'>";
                 if($isEditModeEnabled)
                 {
@@ -350,7 +353,7 @@
                 echo "<span class='bi bi-file-earmark-arrow-up-fill'></span><span id='uploadedFileName'></span>";
                 echo "<input type='file' name='productDefaultImage' accept='.png, .jpg, .jpeg, .gif, .bmp, .tiff'";
                 if($isEditModeEnabled)
-                    echo "></label><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Zdjęcie w tle jest obecnie ustawione jako domyślne. Przesłanie innego pliku będzie oznaczać jego zmianę.</h6>";
+                    echo "></label><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Zdjęcie w tle jest obecnie ustawione jako domyślne. Przesłanie innego pliku będzie oznaczać jego zmianę. Nowa grafika musi mieć wymiary co najmniej 500x500 pikseli, a rozmiar pliku nie może przekraczać 2 MB.</h6><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Edytowanie zdjęć innych niż domyślne nie jest możliwe w tej wersji MatiTechShop.</h6>";
                 else
                     echo " required></label>";
                 if(isset($_SESSION["product_error_defaultImage"]))
@@ -371,7 +374,9 @@
                         echo "</div>";
                         unset($_SESSION["product_error_otherImages"]);
                     }
-                }             
+                }    
+                if(!$isEditModeEnabled)
+                    echo "<h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Grafiki muszą mieć wymiary co najmniej 500x500 pikseli, a rozmiar pojedynczego pliku nie może przekraczać 2 MB.</h6><h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Nie będzie możliwości edytowania zdjęć innych niż domyślne - funkcja ta nie jest dostępna w tej wersji MatiTechShop.</h6>";   
                 echo "</fieldset><fieldset><legend>Parametry</legend>";                   
                 echo "<label>Najlepsza cecha produktu <i>(opcjonalne)</i>:";                     
                 echo "<input type='text' name='productBestFeature' minlength='5' maxlength='30' placeholder='np. Wydajny procesor' class='form-control'";
@@ -395,9 +400,9 @@
                     echo "</datalist>";
                 }                      
                 $result->free_result();
-                echo "<button type='button' class='btn btn-info' id='addParameter'><span class='bi bi-database-fill-add'></span> Dodaj parametr</button>";     
+                echo "<button type='button' class='btn btn-primary' id='addParameter'><span class='bi bi-database-fill-add'></span> Dodaj parametr</button>";     
                 echo "<div id='parameterList'></div></div>";
-                #echo "<h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Jeżeli produkt ma więcej niż 5 parametrów, na liście produktów z poziomu kategorii będzie widocznych tylko pięć pierwszych (oznaczonych specjalną ramką).</h6>";
+                echo "<h6 style='font-size: 0.8rem; color: rgb(90, 90, 90);'>Uwaga: Jeżeli produkt ma więcej niż 5 parametrów, na liście produktów z poziomu kategorii będzie widocznych tylko pięć pierwszych (oznaczonych specjalną ramką).</h6>";
                 if(isset($_SESSION["product_error_parameters"]))
                 {
                     echo "<div class='invalid-tooltip'>".$_SESSION["product_error_parameters"]."</div>";

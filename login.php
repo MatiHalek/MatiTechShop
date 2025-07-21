@@ -3,7 +3,7 @@
     session_start();
     if(isset($_SESSION["logged"]) && $_SESSION["logged"])
     {
-        header("Location: index.php");
+        header("Location: ./");
         exit();
     }
 ?>
@@ -18,11 +18,11 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
     <title>Zaloguj się | MatiTechShop</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>

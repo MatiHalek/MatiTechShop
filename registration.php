@@ -3,7 +3,7 @@
     session_start();
     if(isset($_SESSION["logged"]) && $_SESSION["logged"])
     {
-        header("Location: index.php");
+        header("Location: ./");
         exit();
     }
     require "functions.php";
@@ -62,7 +62,7 @@
                 "position" => 1
             );
             $connect->close();
-            header("Location: index.php");
+            header("Location: ./");
             exit();
         }
     }
@@ -78,13 +78,13 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
     <title>Załóż nowe konto | MatiTechShop</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="jquery-ui-1.13.2.custom/jquery-ui.min.css">
     <script src="https://www.google.com/recaptcha/api.js?render=6LfiUfknAAAAAKF3I0Lw4sYPLhNeU2eEhLFvtd9C"></script>
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
@@ -187,7 +187,7 @@
                 </div>
                 <div class="input">
                     <label for="date" class="labelText"><span title="To pole jest wymagane." class="requiredField" data-toggle="tooltip"><sup>*</sup></span>Data urodzenia</label>
-                    <input type="date" name="reg_date" class="form-control" max="<?php echo date("Y-m-d");?>" id="date" data-toggle="tooltip" data-placement="right" data-html="true" title="<b>Wybierz swoją datę urodzenia.</b><br>Pozwoli to na lepsze spersonalizowanie ofert." value="<?php
+                    <input type="date" name="reg_date" class="form-control" max="<?php echo date("Y-m-d");?>" id="date" data-toggle="tooltip" data-placement="right" data-html="true" title="<b>Podaj swoją datę urodzenia.</b>" value="<?php
                         if(isset($_SESSION["remember_date"]))
                         {
                             echo $_SESSION["remember_date"];
@@ -206,7 +206,7 @@
                 </div>
                 <div class="input">
                     <label for="phone" class="labelText">Numer telefonu</label>  
-                    <input type="tel" name="reg_tel" class="form-control" placeholder="Numer telefonu" id="phone" data-toggle="tooltip" data-placement="right" data-html="true" title="<b>Podaj swój numer telefonu.</b><i>(opcjonalne)</i>" value="<?php
+                    <input type="tel" name="reg_tel" class="form-control" placeholder="Numer telefonu" id="phone" data-toggle="tooltip" data-placement="right" data-html="true" title="<b>Podaj swój numer telefonu.</b><i>(opcjonalne)</i><br>Uzupełnimy go automatycznie przy składaniu zamówienia." value="<?php
                         if(isset($_SESSION["remember_phone"]))
                         {
                             echo $_SESSION["remember_phone"];
@@ -216,7 +216,7 @@
                 </div>
                 <div>
                     <input type="checkbox" name="reg_regulations" id="regulations" required>                  
-                    <label for="regulations"><span title="To pole jest wymagane." class="requiredField" data-toggle="tooltip"><sup>*</sup></span>Akceptuję <a href="./">regulamin</a> MatiTechShop.</label>   
+                    <label for="regulations"><span title="To pole jest wymagane." class="requiredField" data-toggle="tooltip"><sup>*</sup></span>Akceptuję <a href="./" target="_blank">regulamin</a> MatiTechShop.</label>   
                     <div>
                         <?php
                             if(isset($_SESSION["reg_error_regulations"]))
@@ -294,6 +294,8 @@
                 $(this).tooltip("dispose").tooltip("show");
             }, false);
         });
+        $('[data-toggle="tooltip"]:not(#login, #password, #password2, #email, #date, #phone)').tooltip();
+        $("#login, #password, #password2, #email, #date, #phone").tooltip({"trigger" : "focus"});
         if(window.matchMedia)
         {
             var mediaQueryList = window.matchMedia("(min-width: 768px)");
@@ -308,9 +310,8 @@
                 mediaQueryList.addEventListener("change", ToggleTooltips, false);
             else
                 mediaQueryList.addListener(ToggleTooltips);
+            ToggleTooltips(mediaQueryList); 
         }
-        $('[data-toggle="tooltip"]:not(#login, #password, #password2, #email, #date, #phone)').tooltip();
-        $("#login, #password, #password2, #email, #date, #phone").tooltip({"trigger" : "focus"});
         function OnSubmit(token)
         {
             if(document.querySelector("main form").checkValidity())

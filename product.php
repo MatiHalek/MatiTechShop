@@ -9,16 +9,16 @@
         $stars = $_POST["stars"];
         $review = (isset($_POST["review"]) && $_POST["review"]) ? (substr($_POST["review"], 0, 500)) : (null);
         $product = $_POST["product"];
-        $query = $connect->prepare("INSERT INTO produkt_opinia(opinia, opis, produkt_id, uzytkownik_id) VALUES(?, ?, ?, ?)");
-        $query->bind_param('dsii', $stars, $review, $product, $_SESSION["user_data"]["user_id"]);
+        $query = $connect->prepare("INSERT INTO produkt_opinia(opinia, opis, produkt_id, uzytkownik_id, data) VALUES(?, ?, ?, ?, ?)");
+        $query->bind_param('dsiis', $stars, $review, $product, $_SESSION["user_data"]["user_id"], date("Y-m-d"));
         $query->execute();
         $connect->close();
-        header("Location: product/".$product."/");
+        header("Location: product/".$product);
         exit();
     }
     if(!isset($_GET["id"]))
     {
-        header("Location: product/1/");
+        header("Location: product/1");
         exit();
     }
 ?>
@@ -32,12 +32,12 @@
     <meta name="keywords" content="sklep, elektronika, telefony, laptopy, tablety, akcesoria, oferty, niskie ceny, promocje, okazje">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
-    <title>MatiTechShop - wspaniałe oferty! | Strona główna</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <title>MatiTechShop - technologia dla każdego! | Strona główna</title>
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
@@ -63,6 +63,21 @@
     </div>
     <main class="contentContainer">        
         <?php
+            function polish_plural(int $count, string $singular, string $plural_2_4, string $plural_others): string
+            {
+                $last_digit = $count % 10;
+                $last_two_digits = $count % 100;
+            
+                if ($count === 1) {
+                    return $singular;
+                }
+            
+                if ($last_digit >= 2 && $last_digit <= 4 && !($last_two_digits >= 12 && $last_two_digits <= 14)) {
+                    return $plural_2_4;
+                }
+            
+                return $plural_others;
+            }     
             require "connect.php";
             $connect = new mysqli($host, $db_user, $db_password, $db_name);
             $connect->set_charset('utf8mb4');
@@ -83,14 +98,14 @@
                 {
                     $tmp_arr = array();
                     while($row3 = $result3->fetch_assoc())
-                        array_push($tmp_arr, "<a href='category/".$row3["kategoria_id"]."/'>".$row3["nazwa"]."</a>");
+                        array_push($tmp_arr, "<a href='category/".$row3["kategoria_id"]."'>".$row3["nazwa"]."</a>");
                     echo "<i>[Należy do kategorii: ".implode(", ", $tmp_arr)."]</i>";
                 }
                 if(isset($_SESSION["logged"]) && $_SESSION["user_data"]["position"] > 1)
                 {
                     echo "<div class='modal fade' id='staticBackdrop' data-backdrop='static' data-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true'>";
                     echo "<div class='modal-dialog modal-dialog-centered'>";
-                    echo "<form action='index.php' method='POST'>";
+                    echo "<form action='./' method='POST'>";
                     echo "<div class='modal-content'>";
                     echo "<div class='modal-header'>";
                     echo "<h5 class='modal-title' id='staticBackdropLabel'>Potwierdź usunięcie</h5>";
@@ -114,8 +129,8 @@
                     echo "<div class='dropdown' id='productOptions'>";
                     echo "<button type='button' class='dropdown-toggle' data-toggle='dropdown' aria-expanded='false'><span class='bi bi-gear-fill' title='Narzędzia administracyjne' data-toggle='tooltip'></span></button>";
                     echo "<div class='dropdown-menu dropdown-menu-right'>";
-                    echo "<a class='dropdown-item' href='./productform.php?mode=edit&id=".$row["produkt_id"]."'>Edytuj produkt</a>";
-                    echo "<a class='dropdown-item' id='deleteProduct' data-toggle='modal' data-target='#staticBackdrop'>Usuń ten produkt</a>";
+                    echo "<a class='dropdown-item' href='./productform/edit/".$row["produkt_id"]."'><span class='bi bi-pen-fill'></span> Edytuj produkt</a><div class='dropdown-divider'></div>";
+                    echo "<a class='dropdown-item text-danger' id='deleteProduct' data-toggle='modal' data-target='#staticBackdrop'><span class='bi bi-trash-fill'></span> Usuń ten produkt</a>";
                     echo "</div>";
                     echo "</div>";
                 }
@@ -196,9 +211,36 @@
                 {
                     while($rowReview = $resultReview->fetch_assoc())
                     {
-                        echo "<div class='productOpinion'><a href='#'>@".$rowReview["nazwa_uzytkownika"]."</a> | <b>Opinia: ".$rowReview["opinia"]."/5</b>";
+                        echo "<div class='productOpinion'><div><span style='font-weight: 600; color: darkblue;'><span class='bi bi-person-circle'></span> ".$rowReview["nazwa_uzytkownika"]."<small> (".$rowReview["data"].") </small></span><span class='mx-1'>|</span>";
+                        $gradientId = 1;
+                        for($i = 1; $i <= 5; $i++)
+                        {
+                            $gradient = false;
+                            echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>";
+                            if($i == (floor($rowReview["opinia"]) + 1) && !is_int($rowReview["opinia"]))
+                            {
+                                $offset = round($rowReview["opinia"] - floor($rowReview["opinia"]), 1) * 100;
+                                echo "<defs>";
+                                echo "<linearGradient id='gradient".$gradientId."'>";
+                                echo "<stop offset='".$offset."%' stop-color='gold'/>";
+                                echo "<stop offset='".$offset."%' stop-color='grey'/>";
+                                echo "</linearGradient>";
+                                echo "</defs>";
+                                $gradient = true;
+                            }
+                            echo "<path fill='";
+                            if($gradient)
+                                echo "url(#gradient".($gradientId++).")";
+                            elseif($i <= floor($rowReview["opinia"]))
+                                echo "gold";
+                            else
+                                echo "grey";
+                            echo "' d='M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z'/>";
+                            echo "</svg>";
+                        }
+                        echo "<span class='font-weight-bold ml-2'>".str_replace(".", ",", $rowReview["opinia"])."</span></div>";
                         if($rowReview["opis"])
-                            echo "<br><i>".htmlspecialchars($rowReview["opis"])."</i>";
+                            echo "<i>".htmlspecialchars($rowReview["opis"])."</i>";
                         echo "</div>";
                     }                                        
                 }
@@ -219,10 +261,10 @@
                     $mainPrice = $row["promocja"];
                 }                       
                 echo "<div style='text-align: center; font-weight: bold; padding-bottom: 1rem;'>";
-                echo "<div style='font-size: 3rem; display:inline-block; line-height: 1; margin-right: 3px;'>".number_format(floor($mainPrice), 0, '.', ' ')."</div>";
+                echo "<div style='font-size: 3em; display:inline-block; line-height: 1; margin-right: 3px;'>".number_format(floor($mainPrice), 0, '.', ' ')."</div>";
                 echo "<div style='display: inline-block; vertical-align: top;'>";
-                echo "<div style='font-size: 1.5rem; line-height: 1.4;'>".explode(".", $mainPrice)[1]."</div>";
-                echo "<div style='font-size: 0.9rem; line-height: 1;'>zł</div>";
+                echo "<div style='font-size: 1.5em; line-height: 1.4;'>".explode(".", $mainPrice)[1]."</div>";
+                echo "<div style='font-size: 0.9em; line-height: 1;'>zł</div>";
                 echo "</div></div>";
                 $amount = $row["ilosc"];
                 if($amount > 0)
@@ -232,17 +274,17 @@
                     echo "<br>Dostępne sztuki: "; 
                 }                                           
                 if($amount <= 0)
-                    echo "<span style='color: gray; font-weight: bold;'>Produkt niedostępny</span>";
+                    echo "<span style='color: #555; font-weight: bold;'>Produkt niedostępny</span>";
                 elseif($amount < 10)
-                    echo "<span style='color: orangered; font-weight: bold;'>".$amount."</span>";
+                    echo "<span style='color: darkred; font-weight: bold;'>".$amount."</span>";
                 elseif($amount < 100)
-                    echo "<span style='color: #DAA520; font-weight: bold;'>".$amount."</span>";
+                    echo "<span style='color: #D26202; font-weight: bold;'>".$amount."</span>";
                 else 
                     echo "<span style='color: green; font-weight: bold;'>".$amount."</span>";
                 echo "</div>";
                 echo "<div><hr>";
                 if($row["gwarancja"])
-                    echo "<b>Gwarancja:</b> ".$row["gwarancja"]." miesiące/y<br>";
+                    echo "<b>Gwarancja:</b> ".$row["gwarancja"]." ".polish_plural($row["gwarancja"], "miesiąc", "miesiące", "miesięcy")."<br>";
                 if($row["cena"] >= 2000)
                     echo "<span style='color: green; font-weight: bold;'>Bezpłatna dostawa</span>";
                 else
@@ -252,7 +294,7 @@
                 echo "</article>";
             }
             else
-                echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator produktu.</strong> <a href='index.php'>Wróć na stronę główną</a></div>";
+                echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator produktu.</strong> <a href='./'>Wróć na stronę główną</a></div>";
             $result->free_result();
             $connect->close();
         ?> 

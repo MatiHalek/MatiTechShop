@@ -1,15 +1,15 @@
-<footer class="bg-dark">
+<footer>
     <?php
         error_reporting(0);
         $version = array(
             "major" => 1,
             "minor" => 1,
             "patch" => 0,
-            "otherInfo" => "Beta",
-            "releaseDate" => new DateTime("2024-03-01")
+            "otherInfo" => "",
+            "releaseDate" => new DateTime("2025-07-10")
         );
-        echo "<div id='footerInfo'><div>&copy; 2022 - ".$version["releaseDate"]->format("Y")." MatiTechShop Corporation. Wszelkie prawa zastrzeżone.</div></div>";
-        echo "<div id='versionInfo'><a href='https://github.com/MatiHalek/MatiTechShop/releases/tag/v{$version['major']}.{$version['minor']}.{$version['patch']}' target='_blank' title='Zobacz na GitHubie' data-toggle='tooltip' class='bi bi-github'></a><span title='Released ".$version["releaseDate"]->format("Y-m-d")."' data-toggle='tooltip'>v{$version['major']}.{$version['minor']}.{$version['patch']}".(empty($version["otherInfo"]) ? "" : " ".$version["otherInfo"])."</span></div>";
+        echo "<div id='footerInfo'><div>&copy; 2022 - ".$version["releaseDate"]->format("Y")." MH Corporation. Wszelkie prawa zastrzeżone.</div></div>";
+        echo "<div id='versionInfo'><a href='https://github.com/MatiHalek/MatiTechShop/releases/tag/v{$version['major']}.{$version['minor']}.{$version['patch']}' target='_blank' title='GitHub' data-toggle='tooltip' class='bi bi-github' aria-label='GitHub'></a><span title='Data wydania: ".$version["releaseDate"]->format("d.m.Y")."' data-toggle='tooltip'>v{$version['major']}.{$version['minor']}.{$version['patch']}".(empty($version["otherInfo"]) ? "" : " ".$version["otherInfo"])."</span></div>";
     ?>      
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>

@@ -63,7 +63,7 @@
                 $_SESSION["file_errors"] = $errors;
         }
         $connect->close();
-        header("Location: index.php");
+        header("Location: ./");
         exit();
     }
 ?>
@@ -77,12 +77,12 @@
     <meta name="keywords" content="sklep, elektronika, telefony, laptopy, tablety, akcesoria, oferty, niskie ceny, promocje, okazje">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Mateusz Marmuźniak">
-    <title>MatiTechShop - wspaniałe oferty! | Strona główna</title>
-    <base href="http://127.0.0.1/sklep/">
-    <link rel="shortcut icon" href="/sklep/img/favicon.ico" type="image/x-icon">
+    <title>MatiTechShop - technologia dla każdego! | Strona główna</title>
+    <base href="http://127.0.0.1/MatiTechShop/">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" integrity="sha384-LrVLJJYk9OiJmjNDakUBU7kS9qCT8wk1j2OU7ncpsfB3QS37UPdkCuq3ZD1MugNY" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="/sklep/style.css">
+    <link rel="stylesheet" href="style.css">
     <noscript>
         <link rel="stylesheet" href="noscriptstyle.css">
     </noscript>
@@ -124,13 +124,28 @@
     </div>
     <main class="contentContainer">
             <?php
+                function polish_plural(int $count, string $singular, string $plural_2_4, string $plural_others): string
+                {
+                    $last_digit = $count % 10;
+                    $last_two_digits = $count % 100;
+                
+                    if ($count === 1) {
+                        return $singular;
+                    }
+                
+                    if ($last_digit >= 2 && $last_digit <= 4 && !($last_two_digits >= 12 && $last_two_digits <= 14)) {
+                        return $plural_2_4;
+                    }
+                
+                    return $plural_others;
+                }           
                 require "connect.php";
                 $connect = new mysqli($host, $db_user, $db_password, $db_name);
                 $connect->set_charset('utf8mb4');
                 $admin = (isset($_SESSION["logged"]) && $_SESSION["user_data"]["position"] > 1) ? true : false;
                 if(!isset($_GET["categoryid"]) && !isset($_GET["search"]))
                 {
-                    echo "<h2>Kategorie produktów</h2>";
+                    echo "<h2>Kategorie produktów</h2><a href='?search=' id='showAllProducts' title='Przeglądaj wszystkie produkty' data-toggle='tooltip' data-trigger='hover'>Wszystko</a>";
                     if($admin)
                     {
                         echo "<label class='toggleSwitch'>";
@@ -139,20 +154,20 @@
                         echo "</label>";
                     }
                     echo "<div class='categoryView'>";
-                    $query = $connect->prepare('SELECT kategoria_id, nazwa, zdjecie, COUNT(produkt_id) AS ilosc FROM kategoria LEFT JOIN produkt_kategoria USING(kategoria_id) GROUP BY kategoria_id');
+                    $query = $connect->prepare('SELECT kategoria_id, nazwa, zdjecie, COUNT(produkt_id) AS products FROM kategoria LEFT JOIN produkt_kategoria USING(kategoria_id) GROUP BY kategoria_id ORDER BY products DESC');
                     $query->execute();
                     $result = $query->get_result();
                     if($result->num_rows > 0)
                     {
                         while($row = $result->fetch_assoc())
                         {
-                            echo "<a href='./category/".$row["kategoria_id"]."/' class='category' id='c".$row["kategoria_id"]."'>";
-                            echo "<button type='button' title='Usuń tę kategorię' class='deleteCategory editable d-none' data-toggle='modal' data-target='#staticBackdrop'>&times;</button>";
+                            echo "<a href='./category/".$row["kategoria_id"]."' class='category' id='c".$row["kategoria_id"]."'>";
+                            echo "<button type='button' title='Usuń tę kategorię' class='deleteCategory editable d-none' data-toggle='modal' data-target='#staticBackdrop'><span class='bi bi-trash-fill'></span></button>";
                             echo "<div class='categoryDetails'>";
-                            echo "<div class='categoryImage' style='background-image: url(img/categoryImages/".$row["zdjecie"].");'></div>";
+                            echo "<div class='categoryImage' style='background-image: url(\"img/categoryImages/".$row["zdjecie"]."\");'></div>";
                             echo "<div class='categoryName'>";
                             echo "<h3 tabindex='0'>".$row["nazwa"]."</h3>";
-                            echo "<h4>(".$row["ilosc"].")</h4>";
+                            echo "<h4>".$row["products"]."</h4>";
                             echo "</div>";
                             echo "</div>";
                             echo "</a>";
@@ -174,45 +189,61 @@
                         echo "</div>";
                         echo "</a>";
                     }
-                    echo "</div>";             
+                    echo "</div>";
                 }
                 else
                 {                   
-                    $searchCategory =  $searchPhrase = "";
                     $searchCategoryQuery = $connect->prepare('SELECT nazwa FROM kategoria WHERE kategoria_id= ?');
                     $searchCategoryQuery->bind_param('i', $_GET["categoryid"]);
                     $searchCategoryQuery->execute();
                     $searchCategoryResult = $searchCategoryQuery->get_result();
                     if($searchCategoryResult->num_rows == 0 && isset($_GET["categoryid"]))
-                        echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";     
+                    {
+                        if($admin)
+                            echo "<h2 class='invisible'>Kategoria</h2><a href='productform' id='addNewProduct' title='Dodaj nowy produkt' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-plus-circle-fill'></span> Dodaj</a>";
+                        echo "<div class='alert alert-danger information'><strong>Błąd 404: Nieprawidłowy identyfikator kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";   
+                    }                         
                     else
                     {
-                        if(isset($_GET["search"]))
+                        $title = "";
+                        if(isset($_GET["search"]) && isset($_GET["categoryid"]))
                         {
-                            $query = $connect->prepare("SELECT * FROM produkt_kategoria INNER JOIN produkt USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0");
-                            $query->bind_param('s', $_GET["search"]);
+                            $query = $connect->prepare("(SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0 AND kategoria_id= ? AND ilosc > 0) UNION (SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0 AND kategoria_id= ? AND ilosc = 0) ORDER BY produkt_id DESC");
+                            $query->bind_param('sisi', $_GET["search"], $_GET["categoryid"], $_GET["search"], $_GET["categoryid"]);
+                            if(!empty($_GET["search"]))
+                                $title .= "Szukaj: ".htmlspecialchars($_GET["search"]). " w kategorii ";
+                        }
+                        else if(isset($_GET["search"]))
+                        {
+                            $query = $connect->prepare("(SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0 AND ilosc > 0) UNION (SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE POSITION(TRIM(?) IN nazwa) > 0 AND ilosc = 0) ORDER BY produkt_id DESC");
+                            $query->bind_param('ss', $_GET["search"], $_GET["search"]);
+                            if(!empty($_GET["search"]))
+                                $title .= "Szukaj: ".htmlspecialchars($_GET["search"]);
+                            else
+                                $title .= "Wszystkie produkty";
                         }
                         else
                         {
-                            $query = $connect->prepare('SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ?');
-                            $query->bind_param('i', $_GET["categoryid"]);
+                            $query = $connect->prepare('(SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ? AND ilosc > 0) UNION (SELECT * FROM produkt INNER JOIN produkt_kategoria USING(produkt_id) WHERE kategoria_id= ? AND ilosc = 0) ORDER BY produkt_id DESC');
+                            $query->bind_param('ii', $_GET["categoryid"], $_GET["categoryid"]);
                         }        
                         $query->execute();
                         $result = $query->get_result();
                         $row3 = $searchCategoryResult->fetch_assoc();
-                        echo "<h2>".$row3["nazwa"]." <small>(Wyniki: ".$result->num_rows.")</small></h2>";
+                        $title .= $row3["nazwa"];
+                        echo "<h2>$title <small>(Wyniki: ".$result->num_rows.")</small></h2>";
                         if($admin)
-                            echo "<a href='productform.php?categoryid=".$_GET["categoryid"]."' id='addNewProduct' title='Dodaj nowy produkt do tej kategorii' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-pencil-fill'></span> Dodaj</a>";
-                        echo "<script>document.title='".$row3["nazwa"]." - wspaniałe oferty w MatiTechShop';</script>";
+                            echo "<a href='productform".(isset($_GET["categoryid"]) ? "/category/".$_GET["categoryid"] : "")."' id='addNewProduct' title='Dodaj nowy produkt".(isset($_GET["categoryid"]) ? " do tej kategorii" : "")."' data-toggle='tooltip' data-trigger='hover'><span class='bi bi-plus-circle-fill'></span> Dodaj</a>";
+                        echo "<script>document.title='$title - technologia dla każdego w MatiTechShop';</script>";
                         if($result->num_rows <= 0)
-                            echo "<div class='alert alert-danger information'><strong>Nie znaleziono produktów w tej kategorii.</strong> <a href='./'>Wróć na stronę główną</a></div>";
+                            echo "<div class='alert alert-danger information'><strong>Nie znaleziono produktów ".(isset($_GET["search"]) ? "pasujących do podanych filtrów" : "w tej kategorii").".</strong> <a href='./'>Wróć na stronę główną</a></div>";
                         else
                         {
                             while($row = $result->fetch_assoc())
                             {
                                 echo "<div class='product'>";
                                 echo "<div class='productTitle'>";
-                                echo "<a href='product/".$row["produkt_id"]."/'>";
+                                echo "<a href='product/".$row["produkt_id"]."'>";
                                 echo "<h4>".$row["nazwa"]."</h4>";
                                 echo "</a>";
                                 echo "<span class='productCode' title='Kod produktu' data-toggle='tooltip'>(".str_pad($row["produkt_id"], 6, "0", STR_PAD_LEFT).")</span>";
@@ -227,7 +258,7 @@
                                 $gradientId = 1;
                                 if($rowOpinion["liczba"] > 0)
                                 {                               
-                                    echo "<div title='".$rowOpinion["liczba"]." osób oceniło ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
+                                    echo "<div title='".$rowOpinion["liczba"]." ".polish_plural($rowOpinion["liczba"], "osoba", "osoby", "osób")." ".polish_plural($rowOpinion["liczba"], "oceniła", "oceniły", "oceniło")." ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
                                     for($i = 1; $i <= 5; $i++)
                                     {
                                         $gradient = false;
@@ -264,7 +295,7 @@
                                 $rowCustomers = $resultCustomers->fetch_assoc();
                                 if($rowCustomers["ilosc"] > 0)
                                 {
-                                    echo "<div class='ml-auto' title='".$rowCustomers["ilosc"]." osób kupiło ".$rowCustomers["suma"]." produktów' data-toggle='tooltip'>";
+                                    echo "<div class='ml-auto' title='".$rowCustomers["ilosc"]." ".polish_plural($rowCustomers["ilosc"], "osoba", "osoby", "osób")." ".polish_plural($rowCustomers["ilosc"], "kupiła", "kupiły", "kupiło")." ".$rowCustomers["suma"]." ".polish_plural($rowCustomers["suma"], "produkt", "produkty", "produktów")."' data-toggle='tooltip'>";
                                     echo $rowCustomers["ilosc"]." <span class='bi bi-people-fill'></span>";
                                     echo $rowCustomers["suma"]." <span class='bi bi-bag-plus-fill'></span>";
                                     echo "</div>";
@@ -276,12 +307,12 @@
                                 $files = array_diff(scandir($path), array(".", "..", "default"));
                                 if(count($files) > 0)
                                 {
-                                    echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip' data-trigger='hover'>&lt;</button>";
-                                    echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip' data-trigger='hover'>&gt;</button>";
+                                    echo "<button type='button' class='btnBack' title='Wstecz' data-toggle='tooltip' data-trigger='hover'><i class='bi bi-caret-left-fill'></i></button>";
+                                    echo "<button type='button' class='btnForward' title='Dalej' data-toggle='tooltip' data-trigger='hover'><i class='bi bi-caret-right-fill'></i></button>";
                                 }                           
                                 if($row["najlepsza_cecha"])
                                     echo "<div class='bestFeature'><span class='bi bi-star-fill'></span>".$row["najlepsza_cecha"]."</div>";
-                                echo "<a href='product/".$row["produkt_id"]."/'>";
+                                echo "<a href='product/".$row["produkt_id"]."'>";
                                 echo "<div>";                                                        
                                 echo "<img src='".$path."/"."default/".scandir($path."/"."default/")[2]."' alt='laptop'>";
                                 foreach($files as $file)
@@ -306,7 +337,7 @@
                                 echo "<div class='sellerInfo'>";
                                 echo "<div>Sprzedaje</div>";
                                 echo "<div>";
-                                echo "<a href='#'>@MatiHalek</a>";
+                                echo "<span><i class='bi bi-person-circle'></i> MatiTechShop</span>";
                                 echo "<span><span class='bi bi-hand-thumbs-up-fill'></span>100%</span>";
                                 echo "</div>";
                                 echo "</div>";                                                    
@@ -334,16 +365,14 @@
                                     echo "<button type='button' class='addToCart' id='btnAdd".$row["produkt_id"]."'><span class='bi bi-basket-fill'></span>Dodaj do koszyka</button>";                      
                                 echo "</div>";
                                 echo "<div style='text-align: center;'>";
-                                if($amount > 0)
-                                    echo "Dostępność: ";
                                 if($amount <= 0)
-                                    echo "<span style='color: gray; font-weight: bold;'>Produkt niedostępny</span>";
+                                    echo "<span style='color: #555; font-weight: bold;'>Produkt niedostępny</span>";
                                 elseif($amount < 10)
-                                    echo "<span style='color: orangered; font-weight: bold;'>Mała ilość</span>";
+                                    echo "<span style='color: darkred; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Ostatnie sztuki</span>";
                                 elseif($amount < 100)
-                                    echo "<span style='color: #DAA520; font-weight: bold;'>Średnia ilość</span>";
+                                    echo "<span style='color: #D26202; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Ograniczona ilość</span>";
                                 else 
-                                    echo "<span style='color: green; font-weight: bold;'>Duża ilość</span>";
+                                    echo "<span style='color: green; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Duża dostępność</span>";
                                 echo "</div>";
                                 echo "</div>";                                        
                                 echo "</div>";        
@@ -352,7 +381,6 @@
                         }                       
                     }                                                     
                 }
-                //$result->free_result();
                 $connect->close();
             ?>         
     </main>

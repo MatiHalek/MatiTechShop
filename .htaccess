@@ -1,19 +1,27 @@
 RewriteEngine On
-RewriteRule ^registration/$ registration.php
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/(.+)/$
+RewriteRule ^ /MatiTechShop/%1 [R=301,L]
 RewriteRule ^registration$ registration.php
 RewriteRule ^login$ login.php
-RewriteRule ^login/$ login.php
 RewriteRule ^cart$ cart.php
-RewriteRule ^cart/$ cart.php
 RewriteRule ^logout$ logout.php
-RewriteRule ^logout/$ logout.php
 RewriteRule ^order$ order.php
-RewriteRule ^order/$ order.php
 RewriteRule ^ordermanage$ ordermanage.php
-RewriteRule ^ordermanage/$ ordermanage.php
 RewriteRule ^productform$ productform.php
-RewriteRule ^productform/$ productform.php
-RewriteRule ^category/([0-9]+)/$ index.php?categoryid=$1
+RewriteRule ^unsupported-browser$ unsupported-browser.php
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/productform/category$
+RewriteRule ^ /MatiTechShop/productform [R=301,L]
+RewriteRule ^productform/category/([0-9]+)$ productform.php?categoryid=$1
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/productform/edit$
+RewriteRule ^ /MatiTechShop/productform [R=301,L]
+RewriteRule ^productform/edit/([0-9]+)$ productform.php?mode=edit&id=$1
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/ordermanage/sort$
+RewriteRule ^ /MatiTechShop/ordermanage [R=301,L]
+RewriteRule ^ordermanage/sort/(.+)$ ordermanage.php?sort=$1
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/category$
+RewriteRule ^ /MatiTechShop/ [R=301,L]
 RewriteRule ^category/([0-9]+)$ index.php?categoryid=$1
-RewriteRule ^product/([0-9]+)/$ product.php?id=$1
+RewriteCond %{REQUEST_URI} ^/MatiTechShop/product$
+RewriteRule ^ /MatiTechShop/ [R=301,L]
 RewriteRule ^product/([0-9]+)$ product.php?id=$1
+
