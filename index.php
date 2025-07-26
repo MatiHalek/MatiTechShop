@@ -258,7 +258,7 @@
                                 $gradientId = 1;
                                 if($rowOpinion["liczba"] > 0)
                                 {                               
-                                    echo "<div title='".$rowOpinion["liczba"]." ".polish_plural($rowOpinion["liczba"], "osoba", "osoby", "osób")." ".polish_plural($rowOpinion["liczba"], "oceniła", "oceniły", "oceniło")." ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
+                                    echo "<a href='product/".$row["produkt_id"]."#reviews' title='".$rowOpinion["liczba"]." ".polish_plural($rowOpinion["liczba"], "osoba", "osoby", "osób")." ".polish_plural($rowOpinion["liczba"], "oceniła", "oceniły", "oceniło")." ten produkt na ".str_replace(".", ",", $rowOpinion["srednia"])."/5' data-toggle='tooltip'>";
                                     for($i = 1; $i <= 5; $i++)
                                     {
                                         $gradient = false;
@@ -286,7 +286,7 @@
                                     }
                                     echo "<span class='font-weight-bold ml-2'>".str_replace(".", ",", $rowOpinion["srednia"])."</span>";
                                     echo "<span class='text-primary ml-1'>(".$rowOpinion["liczba"].")</span>";
-                                    echo "</div>";                               
+                                    echo "</a>";                               
                                 }
                                 $queryCustomers = $connect->prepare("SELECT COUNT(*) AS ilosc, SUM(liczba) AS suma FROM(SELECT uzytkownik_id, SUM(ilosc) AS liczba FROM `produkt_zamowienie` INNER JOIN zamowienie USING(zamowienie_id) WHERE produkt_id = ? GROUP BY uzytkownik_id) AS test");
                                 $queryCustomers->bind_param('i', $row["produkt_id"]);
@@ -366,13 +366,13 @@
                                 echo "</div>";
                                 echo "<div style='text-align: center;'>";
                                 if($amount <= 0)
-                                    echo "<span style='color: #555; font-weight: bold;'>Produkt niedostępny</span>";
+                                    echo "<span style='color: #555; font-weight: bold;'><span class='bi bi-x-circle-fill'></span> Produkt niedostępny</span>";
                                 elseif($amount < 10)
-                                    echo "<span style='color: darkred; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Ostatnie sztuki</span>";
+                                    echo "<span style='color: darkred; font-weight: bold;'><span class='bi bi-exclamation-circle-fill'></span> Ostatnie sztuki</span>";
                                 elseif($amount < 100)
                                     echo "<span style='color: #D26202; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Ograniczona ilość</span>";
                                 else 
-                                    echo "<span style='color: green; font-weight: bold;'><span class='bi bi-info-circle-fill'></span> Duża dostępność</span>";
+                                    echo "<span style='color: green; font-weight: bold;'><span class='bi bi-check-circle-fill'></span> Duża dostępność</span>";
                                 echo "</div>";
                                 echo "</div>";                                        
                                 echo "</div>";        

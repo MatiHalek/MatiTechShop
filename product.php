@@ -184,7 +184,7 @@
                     echo "<br><br></div>";
                 }
                 echo "<button class='productSectionButton' type='button'>Opinie</button>";
-                echo "<div class='productSection'>";
+                echo "<div class='productSection' id='reviews'>";
                 if(isset($_SESSION["logged"]))
                 {
                     echo "<form action='product.php' method='POST'>";
@@ -274,7 +274,7 @@
                     echo "<br>Dostępne sztuki: "; 
                 }                                           
                 if($amount <= 0)
-                    echo "<span style='color: #555; font-weight: bold;'>Produkt niedostępny</span>";
+                    echo "<span style='color: #555; font-weight: bold;'><span class='bi bi-x-circle-fill'></span> Produkt niedostępny</span>";
                 elseif($amount < 10)
                     echo "<span style='color: darkred; font-weight: bold;'>".$amount."</span>";
                 elseif($amount < 100)
@@ -286,9 +286,9 @@
                 if($row["gwarancja"])
                     echo "<b>Gwarancja:</b> ".$row["gwarancja"]." ".polish_plural($row["gwarancja"], "miesiąc", "miesiące", "miesięcy")."<br>";
                 if($row["cena"] >= 2000)
-                    echo "<span style='color: green; font-weight: bold;'>Bezpłatna dostawa</span>";
+                    echo "<span style='color: green; font-weight: bold;'><span class='bi bi-truck'></span> Bezpłatna dostawa</span>";
                 else
-                    echo "<span style='color: blue; font-weight: bold;'>Dostawa od 9,99 zł</span>";
+                    echo "<span style='color: blue; font-weight: bold;'><span class='bi bi-truck'></span> Dostawa od 9,99 zł</span>";
                 echo "</div>";
                 echo "</section>";
                 echo "</article>";
@@ -304,6 +304,12 @@
     ?>
     <script src="./js/gallery.js"></script>
     <script>
+        function GoToReviews() {
+            if(window.location.hash == "#reviews")
+                document.querySelector("#reviews").scrollIntoView({behavior: "smooth"});
+            this.removeEventListener("transitionend", GoToReviews);
+        }
+        document.querySelector("#reviews").addEventListener("transitionend", GoToReviews, false);
         [].forEach.call(document.querySelectorAll(".productSectionButton"), function(el){
             el.addEventListener("click", function(){
                 $(this).toggleClass("activeSection");

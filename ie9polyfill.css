@@ -54,6 +54,12 @@ header nav > div > *
 {
     background-color: dodgerblue;
 }
+.sellerInfo
+{
+    position: absolute;
+    bottom: 5px;
+    width: calc(50% - 16px);
+}
 @media (min-width: 768px)
 {
     #logInButton span:last-of-type, #registerButton span:last-of-type
@@ -63,6 +69,10 @@ header nav > div > *
     #logInButton span:first-of-type, #registerButton span:first-of-type
     {
         padding-right: 7px;
+    }
+    .sellerInfo
+    {
+        width: calc(65% - 15px);
     }
 }
 main .input-group
@@ -75,7 +85,7 @@ main .input-group > input, main .input-group > div
     vertical-align: top;
     font-size: 1rem;
 }
-footer > div:first-of-type > div, .fullscreen img, #loadingScreen > div, #back, #forward
+footer > div:first-of-type > div, .fullscreen img, #loadingScreen > div
 {
     top: 50%;
     -ms-transform: translateY(-50%);
@@ -129,6 +139,10 @@ footer > div:first-of-type > div, .fullscreen img, #loadingScreen > div, #back, 
 {
     height: 100%;
 }
+.productReview a
+{
+    display: inline-block;
+}
 .productImage, .productDesc, .productReview div
 {
     float: left;
@@ -142,7 +156,7 @@ footer > div:first-of-type > div, .fullscreen img, #loadingScreen > div, #back, 
 {
     display: block;
 }
-.productDetails, .fullscreen img, #loadingScreen > div
+.productDetails, .fullscreen img, #loadingScreen > div, .productResults
 {
     position: relative;
 }
@@ -150,17 +164,11 @@ footer > div:first-of-type > div
 {
     position: absolute;
 }
-.sellerInfo
-{
-    position: absolute;
-    bottom: 5px;
-    width: calc(65% - 15px);
-}
 .productReview div *
 {
     float: left;
 }
-.productReview > div:last-of-type, .sellerInfo > div:last-of-type > span:last-of-type, header nav > div
+.productReview > div:last-of-type, .sellerInfo > div:last-of-type > span:last-of-type, header nav > div, .searchPrice
 {
     float: right;
 }
@@ -174,7 +182,7 @@ footer > div:first-of-type > div
     display: block;
     clear: both;
 }
-.productFeatures, .productSummary, .optionLabel
+.productFeatures, .productSummary, .optionLabel, .searchImage
 {
     float: left;
 }
@@ -190,7 +198,7 @@ footer > div:first-of-type > div
 {
     display: inline-block;
 }
-.optionLabel > label, .cartItem > div, .productSection:first-of-type > div > div, .categoryName h3, #logInButton span, #registerButton span
+.optionLabel > label, .cartItem > div, .productSection:first-of-type > div > div, .categoryName h3, #logInButton span, #registerButton span, .productReview span, .productReview > span
 {
     vertical-align: middle;
 }
@@ -230,13 +238,15 @@ footer > div:first-of-type > div
 {
     text-align: left;
 }
+.searchTitle
+{
+    position: absolute;
+    top: 50%;
+    -ms-transform: translate(62px, -50%);
+}
 #searchResults > *
 {
     display: block;
-}
-.productResults > *
-{
-    float: left;
 }
 @media (max-width: 767.98px)
 {
@@ -252,7 +262,14 @@ footer > div:first-of-type > div
 }
 #logInButton::after
 {
-    display: block;
+    display: table;
     position: relative;
     top: 18.1px;
+}
+@media (min-width: 992px)
+{
+    #loginForm > section:last-of-type
+    {
+        display: block;
+    }
 }

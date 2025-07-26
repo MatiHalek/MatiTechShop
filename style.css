@@ -324,7 +324,10 @@ span.requiredField
     }
     #loginForm > section:last-of-type
     {
-        display: block;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
     }
 }
 /* navigation */
@@ -1146,22 +1149,29 @@ body
     width: 100%;
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-align: center;
     align-items: center;
+}
+.productReview a, .productReview div
+{
+    color: black;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 2px;
+    transition: background-color .3s ease-in-out;
+    text-decoration: none;
+    height: 100%;
+}
+.productReview > *:hover
+{
+    background-color: rgba(119, 136, 153, 0.5);
 }
 .productReview div
 {
-    display: -ms-flexbox;
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 2px;
-    transition: background-color .3s ease-in-out;
-    height: 100%;
-}
-.productReview div:hover
-{
-    background-color: rgba(119, 136, 153, 0.5);   
+    cursor: help;
 }
 .productReview svg
 {
@@ -1199,6 +1209,7 @@ body
     display: flex;
     overflow: hidden;    
     align-self: flex-start;
+    align-items: flex-start;
 }
 .productImage a
 {
@@ -1290,6 +1301,10 @@ body
 .productDesc
 {
     width: 65%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 .productDesc ul
 {
@@ -1357,6 +1372,10 @@ body
 {
     width: 250px;
     padding-left: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 .priceInfo > div
 {
@@ -1370,6 +1389,7 @@ body
     border: 2px solid #B0C4DE;
     background-color: rgba(176, 196, 222, 0.7);
     border-radius: 5px;
+    flex-grow: 1;
 }
 .discount
 {
@@ -1481,6 +1501,7 @@ body
 {
     position: absolute;
     top: 50%;
+    -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     left: 3px;
     display: block;
@@ -1936,6 +1957,12 @@ body
 #imageInfo > h4, #imageInfo > h5
 {
     margin: 1px;
+}
+#back, #forward
+{
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 #back
 {
