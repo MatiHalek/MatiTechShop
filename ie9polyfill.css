@@ -238,11 +238,19 @@ footer > div:first-of-type > div
 {
     text-align: left;
 }
-.searchTitle
+.searchTitle, .searchPrice
 {
     position: absolute;
     top: 50%;
+}
+.searchTitle
+{
     -ms-transform: translate(62px, -50%);
+}
+.searchPrice
+{
+    right: 8px;
+    -ms-transform: translateY(-50%);
 }
 #searchResults > *
 {

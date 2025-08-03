@@ -281,6 +281,17 @@
                     echo "<span style='color: #D26202; font-weight: bold;'>".$amount."</span>";
                 else 
                     echo "<span style='color: green; font-weight: bold;'>".$amount."</span>";
+                $queryCustomers = $connect->prepare("SELECT COUNT(*) AS ilosc, SUM(liczba) AS suma FROM(SELECT uzytkownik_id, SUM(ilosc) AS liczba FROM `produkt_zamowienie` INNER JOIN zamowienie USING(zamowienie_id) WHERE produkt_id = ? GROUP BY uzytkownik_id) AS test");
+                $queryCustomers->bind_param('i', $row["produkt_id"]);
+                $queryCustomers->execute();
+                $resultCustomers = $queryCustomers->get_result();
+                $rowCustomers = $resultCustomers->fetch_assoc();
+                echo "<div class='productSellInfo'>";
+                if($rowCustomers["ilosc"] > 0)
+                    echo $rowCustomers["ilosc"]." ".polish_plural($rowCustomers["ilosc"], "osoba", "osoby", "osób")." ".polish_plural($rowCustomers["ilosc"], "kupiła", "kupiły", "kupiło")." ".$rowCustomers["suma"]." ".polish_plural($rowCustomers["suma"], "produkt", "produkty", "produktów");
+                else
+                    echo "Nikt jeszcze nie kupił tego produktu.";
+                echo "</div>";
                 echo "</div>";
                 echo "<div><hr>";
                 if($row["gwarancja"])

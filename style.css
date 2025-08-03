@@ -212,6 +212,8 @@ span.requiredField
     height: 100%;
     border-radius: 15px;
     position: relative;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
 }
 #loginForm h1
 {
@@ -1209,7 +1211,6 @@ body
     display: flex;
     overflow: hidden;    
     align-self: flex-start;
-    align-items: flex-start;
 }
 .productImage a
 {
@@ -1222,6 +1223,8 @@ body
 {
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-align: center;
+    align-items: center;
     transition: transform .3s ease-in-out;
 }
 .productImage img
@@ -1332,6 +1335,13 @@ body
     background-image: url(./img/listIcon3D.png);
     background-size: contain;
     background-repeat: no-repeat;
+}
+.productProperties
+{
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    overflow-y: auto;
+    height: calc(100% - 60px);
 }
 .sellerInfo
 {
@@ -1566,6 +1576,13 @@ body
 .productSummary > div:not(:first-of-type)
 {
     text-align: center;
+}
+.productSellInfo
+{
+    font-weight: 500;
+    color: darkblue;
+    font-size: .9rem;
+    margin-top: .25rem;
 }
 @media (min-width: 768px)
 {

@@ -6,9 +6,9 @@
             "minor" => 1,
             "patch" => 0,
             "otherInfo" => "",
-            "releaseDate" => new DateTime("2025-07-10")
+            "releaseDate" => new DateTime("2025-08-03")
         );
-        echo "<div id='footerInfo'><div>&copy; 2022 - ".$version["releaseDate"]->format("Y")." MH Corporation. Wszelkie prawa zastrzeżone.</div></div>";
+        echo "<div id='footerInfo'><div>&copy; 2022 - ".$version["releaseDate"]->format("Y")." MH Corp. Wszelkie prawa zastrzeżone.</div></div>";
         echo "<div id='versionInfo'><a href='https://github.com/MatiHalek/MatiTechShop/releases/tag/v{$version['major']}.{$version['minor']}.{$version['patch']}' target='_blank' title='GitHub' data-toggle='tooltip' class='bi bi-github' aria-label='GitHub'></a><span title='Data wydania: ".$version["releaseDate"]->format("d.m.Y")."' data-toggle='tooltip'>v{$version['major']}.{$version['minor']}.{$version['patch']}".(empty($version["otherInfo"]) ? "" : " ".$version["otherInfo"])."</span></div>";
     ?>      
 </footer>

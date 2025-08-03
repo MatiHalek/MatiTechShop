@@ -321,7 +321,7 @@
                                 echo "</a>";
                                 echo "</div>";
                                 echo "<div class='productDesc'>";
-                                echo "<div class='productProperties' style='overflow-y: auto; height: calc(100% - 60px);'>";
+                                echo "<div class='productProperties'>";
                                 $query2 = $connect->prepare('SELECT parametr, wartosc FROM produkt_parametr INNER JOIN parametr USING(parametr_id) WHERE produkt_id= ? LIMIT 5');
                                 $query2->bind_param('i', $row["produkt_id"]);
                                 $query2->execute();
